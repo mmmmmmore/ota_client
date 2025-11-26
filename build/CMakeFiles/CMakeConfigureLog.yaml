@@ -1,0 +1,72 @@
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/local/share/cmake/Modules/FindGit.cmake:111 (find_program)"
+      - "/Users/maochun/esp32prj/esp-idf/tools/cmake/git_submodules.cmake:1 (find_package)"
+      - "/Users/maochun/esp32prj/esp-idf/tools/cmake/idf.cmake:41 (include)"
+      - "/Users/maochun/esp32prj/esp-idf/tools/cmake/project.cmake:29 (include)"
+      - "CMakeLists.txt:3 (include)"
+    mode: "program"
+    variable: "GIT_EXECUTABLE"
+    description: "Git command line client"
+    settings:
+      SearchFramework: "FIRST"
+      SearchAppBundle: "FIRST"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "git"
+    candidate_directories:
+      - "/usr/local/bin/"
+      - "/Users/maochun/esp32prj/esp-idf/components/espcoredump/"
+      - "/Users/maochun/esp32prj/esp-idf/components/partition_table/"
+      - "/Users/maochun/esp32prj/esp-idf/components/app_update/"
+      - "/Users/maochun/.espressif/tools/xtensa-esp-elf-gdb/16.2_20250324/xtensa-esp-elf-gdb/bin/"
+      - "/Users/maochun/.espressif/tools/xtensa-esp-elf/esp-15.1.0_20250607/xtensa-esp-elf/bin/"
+      - "/Users/maochun/.espressif/tools/riscv32-esp-elf/esp-15.1.0_20250607/riscv32-esp-elf/bin/"
+      - "/Users/maochun/.espressif/tools/esp32ulp-elf/2.38_20240113/esp32ulp-elf/bin/"
+      - "/Users/maochun/.espressif/tools/openocd-esp32/v0.12.0-esp32-20250707/openocd-esp32/bin/"
+      - "/Users/maochun/.espressif/python_env/idf6.0_py3.13_env/bin/"
+      - "/Users/maochun/esp32prj/esp-idf/tools/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+    searched_directories:
+      - "/usr/local/bin/git"
+      - "/Users/maochun/esp32prj/esp-idf/components/espcoredump/git"
+      - "/Users/maochun/esp32prj/esp-idf/components/partition_table/git"
+      - "/Users/maochun/esp32prj/esp-idf/components/app_update/git"
+      - "/Users/maochun/.espressif/tools/xtensa-esp-elf-gdb/16.2_20250324/xtensa-esp-elf-gdb/bin/git"
+      - "/Users/maochun/.espressif/tools/xtensa-esp-elf/esp-15.1.0_20250607/xtensa-esp-elf/bin/git"
+      - "/Users/maochun/.espressif/tools/riscv32-esp-elf/esp-15.1.0_20250607/riscv32-esp-elf/bin/git"
+      - "/Users/maochun/.espressif/tools/esp32ulp-elf/2.38_20240113/esp32ulp-elf/bin/git"
+      - "/Users/maochun/.espressif/tools/openocd-esp32/v0.12.0-esp32-20250707/openocd-esp32/bin/git"
+      - "/Users/maochun/.espressif/python_env/idf6.0_py3.13_env/bin/git"
+      - "/Users/maochun/esp32prj/esp-idf/tools/git"
+    found: "/usr/bin/git"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/Users/maochun/esp32prj/esp-idf/components/espcoredump"
+        - "/Users/maochun/esp32prj/esp-idf/components/partition_table"
+        - "/Users/maochun/esp32prj/esp-idf/components/app_update"
+        - "/Users/maochun/.espressif/tools/xtensa-esp-elf-gdb/16.2_20250324/xtensa-esp-elf-gdb/bin"
+        - "/Users/maochun/.espressif/tools/xtensa-esp-elf/esp-15.1.0_20250607/xtensa-esp-elf/bin"
+        - "/Users/maochun/.espressif/tools/riscv32-esp-elf/esp-15.1.0_20250607/riscv32-esp-elf/bin"
+        - "/Users/maochun/.espressif/tools/esp32ulp-elf/2.38_20240113/esp32ulp-elf/bin"
+        - "/Users/maochun/.espressif/tools/openocd-esp32/v0.12.0-esp32-20250707/openocd-esp32/bin"
+        - "/Users/maochun/.espressif/python_env/idf6.0_py3.13_env/bin"
+        - "/Users/maochun/esp32prj/esp-idf/tools"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/usr/sbin"
+        - "/sbin"
+...
