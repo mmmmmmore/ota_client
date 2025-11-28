@@ -1,19 +1,18 @@
 #ifndef OTA_HANDLER_H
 #define OTA_HANDLER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "esp_err.h"
 
-/**
- * @brief Start OTA update from the given URL.
- *
- * @param ota_url The HTTP or HTTPS URL pointing to the firmware binary.
- */
-void ota_start(const char *ota_url);
+// 初始化 OTA Handler
+void ota_handler_init(void);
 
-#ifdef __cplusplus
-}
-#endif
+// 处理 GW 下发的 OTA 任务 JSON
+void ota_handler_process(const char *task_json);
+
+// 在系统启动时检查 OTA 记录
+void ota_record_check(void);
+
+// 上报结果给 GW
+void ota_report_result(const char *version, bool success);
 
 #endif // OTA_HANDLER_H
