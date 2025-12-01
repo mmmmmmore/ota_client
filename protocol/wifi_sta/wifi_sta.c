@@ -7,34 +7,46 @@
 
 static const char *TAG = "wifi_sta";
 static bool s_connected = false;
+static int retry_count = 0;
+
+// 固定的 OTA-GW 网络配置
+#define OTA_GW_SSID      "OTA-GW"
+#define OTA_GW_PASSWORD  "12345678"
+#define GW_GATEWAY_IP    ESP_IP4TOADDR(192,168,4,1)
 
 // Wi-Fi事件处理函数
 static void wifi_event_handler(void* arg, esp_event_base_t event_base,
                                int32_t event_id, void* event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
-        ESP_LOGI(TAG, "WiFi STA start, trying to connect...");
+        ESP_LOGI(TAG, "WiFi STA start, trying to connect to OTA-GW...");
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         s_connected = false;
-        ESP_LOGW(TAG, "Disconnected, retrying...");
-        esp_wifi_connect();
+        if (retry_count < 5) {
+            esp_wifi_connect();
+            retry_count++;
+            ESP_LOGW(TAG, "Disconnected, retrying... (%d)", retry_count);
+        } else {
+            ESP_LOGE(TAG, "Failed to connect to OTA-GW after 5 retries");
+        }
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         s_connected = true;
+        retry_count = 0;
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         ESP_LOGI(TAG, "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
         ESP_LOGI(TAG, "Netmask: " IPSTR, IP2STR(&event->ip_info.netmask));
         ESP_LOGI(TAG, "Gateway: " IPSTR, IP2STR(&event->ip_info.gw));
 
         // 检查是否正确接入 GW 网络
-        if (event->ip_info.gw.addr == ESP_IP4TOADDR(192,168,4,1)) {
-            ESP_LOGI(TAG, "Connected to GW (192.168.4.1), can access OTA Server at 192.168.4.2");
+        if (event->ip_info.gw.addr == GW_GATEWAY_IP) {
+            ESP_LOGI(TAG, "Connected to OTA-GW (192.168.4.1), OTA Server reachable at 192.168.4.2");
         } else {
             ESP_LOGW(TAG, "Unexpected gateway, check GW configuration!");
         }
     }
 }
 
-esp_err_t wifi_sta_init(const char *ssid, const char *password) {
+esp_err_t wifi_sta_init(void) {
     esp_err_t err;
 
     // 初始化网络栈
@@ -63,8 +75,10 @@ esp_err_t wifi_sta_init(const char *ssid, const char *password) {
                                                         NULL));
 
     wifi_config_t wifi_config = {0};
-    strncpy((char*)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid));
-    strncpy((char*)wifi_config.sta.password, password, sizeof(wifi_config.sta.password));
+    strncpy((char*)wifi_config.sta.ssid, OTA_GW_SSID, sizeof(wifi_config.sta.ssid)-1);
+    wifi_config.sta.ssid[sizeof(wifi_config.sta.ssid)-1] = '\0';
+    strncpy((char*)wifi_config.sta.password, OTA_GW_PASSWORD, sizeof(wifi_config.sta.password)-1);
+    wifi_config.sta.password[sizeof(wifi_config.sta.password)-1] = '\0';
 
     err = esp_wifi_set_mode(WIFI_MODE_STA);
     if (err != ESP_OK) return err;
@@ -75,7 +89,7 @@ esp_err_t wifi_sta_init(const char *ssid, const char *password) {
     err = esp_wifi_start();
     if (err != ESP_OK) return err;
 
-    ESP_LOGI(TAG, "WiFi STA initialized, connecting to SSID:%s", ssid);
+    ESP_LOGI(TAG, "WiFi STA initialized, connecting to SSID:%s", OTA_GW_SSID);
     return ESP_OK;
 }
 
