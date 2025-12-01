@@ -1,0 +1,20 @@
+Command: cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=/Users/maochun/.espressif/python_env/idf6.0_py3.13_env/bin/python -DESP_PLATFORM=1 -DIDF_TARGET=esp32s3 -DCCACHE_ENABLE=0 /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+CMake Error at /Users/maochun/esp32prj/esp-idf/tools/cmake/build.cmake:332 (message):
+  Failed to resolve component 'camera' required by component 'main': unknown
+  name.
+Call Stack (most recent call first):
+  /Users/maochun/esp32prj/esp-idf/tools/cmake/build.cmake:375 (__build_resolve_and_add_req)
+  /Users/maochun/esp32prj/esp-idf/tools/cmake/build.cmake:705 (__build_expand_requirements)
+  /Users/maochun/esp32prj/esp-idf/tools/cmake/project.cmake:740 (idf_build_process)
+  CMakeLists.txt:27 (project)
+
+
