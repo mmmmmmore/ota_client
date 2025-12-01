@@ -1,18 +1,15 @@
 menu "Device Configuration"
 
-config  DEVICE_NAME
+config DEVICE_NAME
     string "Device name"
     default "SCM1"
     help
-        device name for GW identify
+        Device name for GW identify
 
-config  CLIENT_ID
-    string "CLient ID"
+config CLIENT_ID
+    string "Client ID"
     default "758"
     help
         Each ECU ID for GW identification
-
-
-    
 
 endmenu
