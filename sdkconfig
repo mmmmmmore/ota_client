@@ -589,6 +589,13 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# Device Configuration
+#
+CONFIG_DEVICE_NAME="SCM1"
+CONFIG_CLIENT_ID="758"
+# end of Device Configuration
+
+#
 # Compiler options
 #
 CONFIG_COMPILER_OPTIMIZATION_DEBUG=y
