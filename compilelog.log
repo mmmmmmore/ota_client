@@ -1,0 +1,19 @@
+
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/app/client_register/client_register.c:16:11: error: conflicting types for 'client_register_send_register'; have 'esp_err_t(int)' {aka 'int(int)'}
+   16 | esp_err_t client_register_send_register(int sock) {
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/app/client_register/client_register.c:1:
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/app/client_register/client_register.h:10:11: note: previous declaration of 'client_register_send_register' with type 'esp_err_t(int,  const char *, const char *, const char *, const char *, const char *)' {aka 'int(int,  const char *, const char *, const char *, const char *, const char *)'}
+   10 | esp_err_t client_register_send_register(int sock,
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/app/client_register/client_register.c: In function 'client_register_send_register':
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/app/client_register/client_register.c:42:50: error: 'CONFIG_DEVICE_NAME' undeclared (first use in this function)
+   42 |     cJSON_AddStringToObject(root, "device_name", CONFIG_DEVICE_NAME);
+      |                                                  ^~~~~~~~~~~~~~~~~~
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/app/client_register/client_register.c:42:50: note: each undeclared identifier is reported only once for each function it appears in
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/app/client_register/client_register.c:43:48: error: 'CONFIG_CLIENT_ID' undeclared (first use in this function); did you mean 'CONFIG_INT_WDT'?
+   43 |     cJSON_AddStringToObject(root, "client_id", CONFIG_CLIENT_ID);
+      |                                                ^~~~~~~~~~~~~~~~
+      |                                                CONFIG_INT_WDT
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/app/client_register/client_register.c:45:46: error: 'PROJECT_VER' undeclared (first use in this function)
+   45 |     cJSON_AddStringToObject(root, "version", PROJECT_VER);
