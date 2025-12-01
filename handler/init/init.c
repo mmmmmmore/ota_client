@@ -1,14 +1,9 @@
 // handler/init/init.c
 #include "init.h"
-#include "webserver.h"
-#include "sccb.h"
-#include "jpeg.h"
 #include "control_mgmt.h"
 //#include "joystick_handler.h"
 //#include "webserver_control.h"
 #include "common_gpio.h"
-#include "camera.h"
-//#include "log_handler.h"
 
 void platform_init(void) {
     // 初始化 NVS 已在 app_main 中完成

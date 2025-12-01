@@ -6,6 +6,6 @@ idf_component_register(
     REQUIRES 
         esp_wifi esp_http_server nvs_flash driver 
         common_gpio
-        motor_handler init ota_handler
+        motor_handler init ota_handler msg_handler client_register
         control_mgmt json
         )

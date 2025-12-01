@@ -8,13 +8,13 @@ set(EXTRA_COMPONENT_DIRS
         app/motor_control
         app/client_register
         components/common_gpio
-        protocol/webserver
         protocol/wifi_sta
         protocol/control_mgmt
         protocol/tcp_client
         handler/init
         handler/motor_handler
         handler/ota_handler
+        handler/msg_handler
         utility/cJSON
         )
 

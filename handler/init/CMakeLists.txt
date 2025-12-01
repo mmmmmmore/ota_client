@@ -4,5 +4,5 @@ idf_component_register(
     REQUIRES 
         driver common_gpio
         motor_handler 
-        tcp_client webserver wifi_sta control_mgmt
+        tcp_client wifi_sta control_mgmt
     )
