@@ -14,6 +14,29 @@ esp_err_t msg_handler_process(const char *json_str) {
     }
 
     // 判断消息类型
+    cJSON *msg_type = cJSON_GetObjectItem(root, "msg_type");
+    if (cJSON_IsString(msg_type)) {
+        if (strcmp(msg_type->valuestring, "register_ack") == 0) {
+            ESP_LOGI(TAG, "Received register ACK from GW, device registered successfully");
+            // 可以在这里更新本地状态，例如标记已注册
+            cJSON_Delete(root);
+            return ESP_OK;
+        } else if (strcmp(msg_type->valuestring, "heartbeat") == 0) {
+            ESP_LOGI(TAG, "Received heartbeat from GW");
+            // 可以选择回复心跳或更新状态
+            cJSON_Delete(root);
+            return ESP_OK;
+        } else if (strcmp(msg_type->valuestring, "sync_request") == 0) {
+            ESP_LOGI(TAG, "GW requested re-register, sending info...");
+            // 重新上报设备信息
+            extern int sock; // 从 tcp_client.c 获取当前 socket
+            client_register_send_register(sock);
+            cJSON_Delete(root);
+            return ESP_OK;
+        }
+    }
+
+    // 判断是否是 OTA 任务
     cJSON *task_id = cJSON_GetObjectItem(root, "task_id");
     cJSON *url     = cJSON_GetObjectItem(root, "url");
     cJSON *version = cJSON_GetObjectItem(root, "version");
@@ -25,18 +48,7 @@ esp_err_t msg_handler_process(const char *json_str) {
         return ESP_OK;
     }
 
-    // 如果是心跳或注册确认消息
-    cJSON *msg_type = cJSON_GetObjectItem(root, "msg_type");
-    if (cJSON_IsString(msg_type)) {
-        if (strcmp(msg_type->valuestring, "register_ack") == 0) {
-            ESP_LOGI(TAG, "Received register ACK from GW");
-            // 可以更新 client_register 状态
-        } else if (strcmp(msg_type->valuestring, "heartbeat") == 0) {
-            ESP_LOGI(TAG, "Received heartbeat from GW");
-            // 可以触发心跳响应
-        }
-    }
-
+    ESP_LOGW(TAG, "Unknown message type, ignoring: %s", json_str);
     cJSON_Delete(root);
-    return ESP_OK;
+    return ESP_FAIL;
 }
