@@ -7,11 +7,6 @@
 void client_register_init(void);
 
 // 构造并发送注册信息到 GW
-esp_err_t client_register_send_register(int sock,
-                                        const char *device_name,
-                                        const char *client_id,
-                                        const char *mac,
-                                        const char *version,
-                                        const char *ip);
+esp_err_t client_register_send_register(int sock );
 
 #endif // CLIENT_REGISTER_H
