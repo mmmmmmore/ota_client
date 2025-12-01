@@ -83,8 +83,9 @@ void tcp_client_task(void *pvParameters) {
             rx_buffer[len] = 0; // Null-terminate
             ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
 
-            // 调用 ota_handler 解析任务 JSON
-            ota_handler_process(rx_buffer);
+            // 调用 msg_handler 统一处理
+            msg_handler_process(rx_buffer);
         }
     }
 }
+
