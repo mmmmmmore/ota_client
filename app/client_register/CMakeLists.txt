@@ -1,5 +1,7 @@
 idf_component_register(
-    SRCS "control_mgmt.c"
+    SRCS "client_register.c"
     INCLUDE_DIRS "."
-    REQUIRES wifi_sta
+    REQUIRES 
+        esp_wifi wifi_sta esp_netif log cJSON
+        tcp_client ota_handler 
 )

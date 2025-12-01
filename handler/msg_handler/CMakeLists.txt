@@ -1,5 +1,8 @@
 idf_component_register(
-    SRCS "control_mgmt.c"
+    SRCS "msg_handler.c"
     INCLUDE_DIRS "."
-    REQUIRES wifi_sta
+    REQUIRES 
+        esp_wifi esp_http_server nvs_flash driver 
+        wifi_sta client_register ota_handler
+        tcp_client cJSON
 )

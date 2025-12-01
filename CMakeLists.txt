@@ -6,6 +6,7 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 set(EXTRA_COMPONENT_DIRS 
         app/led_control
         app/motor_control
+        app/client_register
         components/common_gpio
         protocol/webserver
         protocol/wifi_sta
@@ -14,6 +15,7 @@ set(EXTRA_COMPONENT_DIRS
         handler/init
         handler/motor_handler
         handler/ota_handler
+        utility/cJSON
         )
 
 # ====== 新增版本号配置 ======
