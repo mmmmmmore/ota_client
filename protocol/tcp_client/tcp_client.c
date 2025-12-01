@@ -2,9 +2,11 @@
 #include "esp_log.h"
 #include "lwip/sockets.h"
 #include "lwip/netdb.h"
-#include "ota_handler.h"
 #include <string.h>
 #include <unistd.h>
+
+#include "client_register.h"
+#include "msg_handler.h"
 
 static const char *TAG = "tcp_client";
 static int sock = -1;
@@ -34,12 +36,12 @@ esp_err_t tcp_client_start(const char *gw_ip, uint16_t gw_port) {
 
     ESP_LOGI(TAG, "Successfully connected to GW");
 
-    // 保存连接参数，便于重连
+    // 保存连接参数，便于断线重连
     strncpy(gw_ip_str, gw_ip, sizeof(gw_ip_str)-1);
     gw_port_num = gw_port;
 
     // 连接成功后立即发送注册信息
-    ota_handler_send_register(sock);
+    client_register_send_register(sock);
 
     return ESP_OK;
 }
@@ -83,9 +85,8 @@ void tcp_client_task(void *pvParameters) {
             rx_buffer[len] = 0; // Null-terminate
             ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
 
-            // 调用 msg_handler 统一处理
+            // 调用 msg_handler 统一处理消息
             msg_handler_process(rx_buffer);
         }
     }
 }
-
