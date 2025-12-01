@@ -5,5 +5,4 @@ idf_component_register(
         "."
     REQUIRES 
         esp_wifi esp_http_server nvs_flash driver heap esp_common 
-        camera jpeg sccb
         )
