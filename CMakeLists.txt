@@ -14,7 +14,6 @@ set(EXTRA_COMPONENT_DIRS
         handler/init
         handler/motor_handler
         handler/ota_handler
-        spiffs 
         )
 
 # ====== 新增版本号配置 ======
@@ -27,7 +26,7 @@ set(PROJECT_VER "2.0.1" CACHE STRING "Project version")
 project(ota_client VERSION ${PROJECT_VER})
 
 # SPIFFS 构建规则（如果启用）
-spiffs_create_partition_image(spiffs spiffs FLASH_IN_PROJECT "spiffs")
+# spiffs_create_partition_image(spiffs spiffs FLASH_IN_PROJECT "spiffs")
 
 # ====== 新增固件重命名规则 ======
 # 编译完成后，将生成的固件文件重命名为带版本号的文件

@@ -5,13 +5,13 @@
 #include "esp_netif.h"
 #include <string.h>
 
-static const char *TAG = "wifi_sta";
+static const char *TAG = "WIFI_STA";
 static bool s_connected = false;
 static int retry_count = 0;
 
 // 固定的 OTA-GW 网络配置
 #define OTA_GW_SSID      "OTA-GW"
-#define OTA_GW_PASSWORD  "12345678"
+#define OTA_GW_PASSWORD  "niwenwoa"
 #define GW_GATEWAY_IP    ESP_IP4TOADDR(192,168,4,1)
 
 // Wi-Fi事件处理函数
