@@ -8,6 +8,10 @@
 #include "esp_app_desc.h"
 #include "tcp_client.h"   // 用于上报结果给 GW
 
+// 引用 server_cert.pem 的链接符号
+extern const char server_cert_pem_start[] asm("_binary_server_cert_pem_start");
+extern const char server_cert_pem_end[]   asm("_binary_server_cert_pem_end");
+
 static const char *TAG = "OTA_HANDLER";
 static const char *NVS_NAMESPACE = "ota_ns";
 static const char *NVS_KEY_FLAG = "ota_flag";
@@ -60,12 +64,19 @@ void ota_handler_process(const char *task_json) {
     // 设置 ota_flag = true，表示有 OTA 任务
     ota_set_flag(true);
 
-    esp_http_client_config_t config = {
+    // HTTP 客户端配置，加入证书
+    esp_http_client_config_t http_config = {
         .url = url,
-        .cert_pem = NULL, // 如果是 HTTPS，需要配置根证书
+        .cert_pem = server_cert_pem_start, // 使用 server_cert.pem
     };
 
-    esp_err_t ret = esp_https_ota(&config);
+    // OTA 配置
+    esp_https_ota_config_t ota_config = {
+        .http_config = &http_config,
+    };
+
+    // 执行 OTA，无论版本是升级还是降级
+    esp_err_t ret = esp_https_ota(&ota_config);
     if (ret == ESP_OK) {
         ESP_LOGI(TAG, "OTA Succeeded, restarting...");
         esp_restart();
