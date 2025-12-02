@@ -1,5 +1,16 @@
-
-/Users/maochun/.espressif/tools/xtensa-esp-elf/esp-15.1.0_20250607/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/15.1.0/../../../../xtensa-esp-elf/bin/ld: esp-idf/tcp_client/libtcp_client.a(tcp_client.c.obj):(.literal.tcp_client_task+0x10): undefined reference to `msg_handler_process'
-/Users/maochun/.espressif/tools/xtensa-esp-elf/esp-15.1.0_20250607/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/15.1.0/../../../../xtensa-esp-elf/bin/ld: esp-idf/tcp_client/libtcp_client.a(tcp_client.c.obj): in function `tcp_client_task':
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.c:90:(.text.tcp_client_task+0xe0): undefined reference to `msg_handler_process'
-collect2: error: ld returned 1 exit status
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/init/init.c: In function 'platform_init':
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/init/init.c:37:37: error: passing argument 1 of 'tcp_client_set_receive_callback' from incompatible pointer type [-Wincompatible-pointer-types]
+   37 |     tcp_client_set_receive_callback(msg_handler_process);   // 设置接收回调
+      |                                     ^~~~~~~~~~~~~~~~~~~
+      |                                     |
+      |                                     esp_err_t (*)(const char *) {aka int (*)(const char *)}
+In file included from /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/init/init.c:12:
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.h:8:55: note: expected 'tcp_receive_cb_t' {aka 'void (*)(const char *, unsigned int)'} but argument is of type 'esp_err_t (*)(const char *)' {aka 'int (*)(const char *)'}
+    8 | void tcp_client_set_receive_callback(tcp_receive_cb_t cb);
+      |                                      ~~~~~~~~~~~~~~~~~^~
+In file included from /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/init/init.c:8:
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/msg_handler/msg_handler.h:7:11: note: 'msg_handler_process' declared here
+    7 | esp_err_t msg_handler_process(const char *json_str);
+      |           ^~~~~~~~~~~~~~~~~~~
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.h:5:16: note: 'tcp_receive_cb_t' declared here
+    5 | typedef void (*tcp_receive_cb_t)(const char *data, size_t len);
