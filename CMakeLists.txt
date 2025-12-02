@@ -25,7 +25,7 @@ set(PROJECT_VER "1.0.1" )
 # 2.0.1 as big change version, add ota feature
 
 # 定义项目名称和版本
-project(ota_client VERSION ${PROJECT_VER})
+project(ota_client VERSION 1.0.1)
 
 add_definitions(-DPROJECT_VER=\"${PROJECT_VER}\")
 

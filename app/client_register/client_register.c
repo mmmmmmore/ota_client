@@ -6,7 +6,14 @@
 #include "esp_wifi.h"
 #include "esp_netif.h"
 
+
+
+
 static const char *TAG = "client_register";
+
+
+
+
 
 void client_register_init(void) {
     ESP_LOGI(TAG, "Client register module initialized");
@@ -42,7 +49,7 @@ esp_err_t client_register_send_register(int sock) {
     cJSON_AddStringToObject(root, "device_name", CONFIG_DEVICE_NAME);
     cJSON_AddStringToObject(root, "client_id", CONFIG_CLIENT_ID);
     cJSON_AddStringToObject(root, "mac", mac_str);
-    cJSON_AddStringToObject(root, "version", CONFIG_PROJECT_VER);
+    cJSON_AddStringToObject(root, "version", OTA_VER);
     cJSON_AddStringToObject(root, "ip", ip_str);
 
     char *json_str = cJSON_PrintUnformatted(root);

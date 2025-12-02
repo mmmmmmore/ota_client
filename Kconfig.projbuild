@@ -12,10 +12,14 @@ config CLIENT_ID
     help
         Each ECU ID for GW identification
 
-config PROJECT_VER
+config TEST_ID
+    string "test string"
+    default "CTC_OTA"
+    help only for test 
+
+config OTA_VER
     string "Project Version"
     default "1.0.1"
-    help 
-        this also need update when new Firemare integrate
+    help this also need update when new Firemare integrate, for ota tracking
 
 endmenu
