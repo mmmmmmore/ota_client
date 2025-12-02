@@ -64,3 +64,48 @@ I (1791) WIFI_STA: Got IP: 192.168.4.2
 I (1791) WIFI_STA: Netmask: 255.255.255.0
 I (1791) WIFI_STA: Gateway: 192.168.4.1
 I (1791) WIFI_STA: Connected to OTA-GW (192.168.4.1), OTA Server reachable at 192.168.4.2
+
+I (2990871) wifi:starting SA query procedure with AP(dc:b4:d9:10:4d:b1)
+I (2990871) wifi:Send SA Query req with transaction id 54f8
+I (2991071) wifi:Send SA Query req with transaction id 54f9
+I (2991271) wifi:Send SA Query req with transaction id 54fa
+I (2991471) wifi:Send SA Query req with transaction id 54fb
+I (2991671) wifi:Send SA Query req with transaction id 54fc
+I (2991871) wifi:Send SA Query req with transaction id 54fd
+I (2991901) wifi:No response to 6 SA Queries, reset connection sending disassoc
+I (2991901) wifi:state: run -> init (0xd100)
+I (2991911) wifi:pm stop, total sleep time: 2814073158 us / 2991155728 us
+
+I (2991911) wifi:new:<1,0>, old:<1,1>, ap:<255,255>, sta:<1,1>, prof:1, snd_ch_cfg:0x0
+W (2991921) WIFI_STA: Disconnected, retrying... (1)
+I (2991921) wifi:new:<1,1>, old:<1,0>, ap:<255,255>, sta:<1,1>, prof:1, snd_ch_cfg:0x0
+I (2991921) wifi:state: init -> auth (0xb0)
+I (2991941) wifi:state: auth -> assoc (0x0)
+I (2991951) wifi:state: assoc -> run (0x10)
+I (2991971) wifi:connected with OTA-GW, aid = 1, channel 1, 40U, bssid = dc:b4:d9:10:4d:b1
+I (2991971) wifi:security: WPA2-PSK, phy: bgn, rssi: -27
+I (2991981) wifi:pm start, type: 1
+
+I (2991981) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000
+I (2992001) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (2993001) esp_netif_handlers: sta ip: 192.168.4.2, mask: 255.255.255.0, gw: 192.168.4.1
+I (2993001) WIFI_STA: Got IP: 192.168.4.2
+I (2993001) WIFI_STA: Netmask: 255.255.255.0
+I (2993001) WIFI_STA: Gateway: 192.168.4.1
+I (2993001) WIFI_STA: Connected to OTA-GW (192.168.4.1), OTA Server reachable at 192.168.4.2
+--- Error: read failed: [Errno 6] Device not configured
+--- Waiting for the device to reconnect.............
+I (2261) wifi:state: assoc -> assoc (0x0)
+I (2271) wifi:state: assoc -> run (0x10)
+I (2291) wifi:connected with OTA-GW, aid = 1, channel 1, 40U, bssid = dc:b4:d9:10:4d:b1
+I (2291) wifi:security: WPA2-PSK, phy: bgn, rssi: -23
+I (2301) wifi:pm start, type: 1
+
+I (2301) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us
+I (2311) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000
+I (2341) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (3331) esp_netif_handlers: sta ip: 192.168.4.2, mask: 255.255.255.0, gw: 192.168.4.1
+I (3331) WIFI_STA: Got IP: 192.168.4.2
+I (3331) WIFI_STA: Netmask: 255.255.255.0
+I (3331) WIFI_STA: Gateway: 192.168.4.1
+I (3331) WIFI_STA: Connected to OTA-GW (192.168.4.1), OTA Server reachable at 192.168.4.2
