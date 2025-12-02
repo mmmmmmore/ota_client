@@ -3,6 +3,7 @@
 #include "cJSON.h"
 #include "ota_handler.h"
 #include "client_register.h"
+#include "tcp_client.h"
 
 static const char *TAG = "msg_handler";
 
@@ -29,8 +30,8 @@ esp_err_t msg_handler_process(const char *json_str) {
         } else if (strcmp(msg_type->valuestring, "sync_request") == 0) {
             ESP_LOGI(TAG, "GW requested re-register, sending info...");
             // 重新上报设备信息
-            extern int sock; // 从 tcp_client.c 获取当前 socket
-            client_register_send_register(sock);
+            //extern int sock; // 从 tcp_client.c 获取当前 socket
+            client_register_send_register(tcp_client_get_sock());
             cJSON_Delete(root);
             return ESP_OK;
         }

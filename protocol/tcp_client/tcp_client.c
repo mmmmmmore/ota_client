@@ -4,7 +4,6 @@
 #include "lwip/netdb.h"
 #include <string.h>
 #include <unistd.h>
-
 #include "client_register.h"
 #include "msg_handler.h"
 
@@ -57,6 +56,11 @@ esp_err_t tcp_client_send(const char *json_str) {
     }
     ESP_LOGI(TAG, "Message sent: %s", json_str);
     return ESP_OK;
+}
+
+
+int tcp_client_get_sock(void){
+    return sock;
 }
 
 void tcp_client_task(void *pvParameters) {

@@ -1,6 +1,7 @@
 #include "motor_control.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
+#include "driver/gpio.h"
 
 static const char *TAG = "MOTOR_CONTROL";
 

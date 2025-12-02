@@ -3,6 +3,7 @@
 
 #include "esp_err.h"
 #include <stdbool.h>
+#include "driver/gpio.h"
 
 // 电机通道枚举（当前先支持一路，后续可扩展）
 typedef enum {

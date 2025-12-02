@@ -1,9 +1,21 @@
 // handler/init/init.c
 #include "init.h"
 #include "control_mgmt.h"
-//#include "joystick_handler.h"
-//#include "webserver_control.h"
 #include "common_gpio.h"
+#include "wifi_sta.h"
+#include "control_mgmt.h"
+#include "ota_handler.h"
+#include "msg_handler.h"
+#include "client_register.h"
+#include "led_control.h"
+#include "motor_control.h"
+#include "tcp_client.h"
+#include "esp_log.h"
+#include "lwip/sockets.h"
+#include "lwip/netdb.h"
+#include <string.h>
+#include <unistd.h>
+
 
 void platform_init(void) {
     // 初始化 NVS 已在 app_main 中完成
@@ -15,12 +27,29 @@ void platform_init(void) {
     // above from components/common_gpio
 
     control_manager_init(); // init the control memory   
-    //init_log_handler();       // 初始化日志模块
-    //camera_init();            // 初始化摄像头
+    //init tcp client
     
-    //sccb_init();
-    //stream_handler_init();    // 初始化图像流处理
-    //joystick_handler_init();  // 初始化摇杆处理
-    //webserver_control_init(); // 初始化 WebServer 控制逻辑
+    // 3. 初始化 OTA
+    ota_handler_init();
+    ota_record_check();
+
+    // 4. 初始化 TCP 客户端
+    tcp_client_start("192.168.4.1", 9001);
+    xTaskCreate(tcp_client_task, "tcp_client_task", 4096, NULL, 5, NULL);
+
+    
+    // 5. 初始化电机控制
+    //motor_control_init();
+    //led_control_init();
+    
+    ota_handler_init();
+
+    //6. register client init
+    client_register_init();
+
+
+
+
+
 }
 

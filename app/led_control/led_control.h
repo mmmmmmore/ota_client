@@ -3,6 +3,7 @@
 
 #include "esp_err.h"
 #include <stdbool.h>
+#include "driver/gpio.h"
 
 // LED 通道枚举
 typedef enum {
