@@ -1,0 +1,66 @@
+
+ESP32S3 Boot Success...
+I (421) pp: pp rom version: e7ae62f
+I (421) net80211: net80211 rom version: e7ae62f
+I (431) wifi:wifi driver task: 3fceec5c, prio:23, stack:6656, core=0
+I (431) wifi:wifi firmware version: df85326
+I (431) wifi:wifi certification version: v7.0
+I (431) wifi:config NVS flash: enabled
+I (441) wifi:config nano formatting: disabled
+I (441) wifi:Init data frame dynamic rx buffer num: 32
+I (441) wifi:Init static rx mgmt buffer num: 5
+I (451) wifi:Init management short buffer num: 32
+I (451) wifi:Init dynamic tx buffer num: 32
+I (461) wifi:Init static tx FG buffer num: 2
+I (461) wifi:Init static rx buffer size: 1600
+I (471) wifi:Init static rx buffer num: 10
+I (471) wifi:Init dynamic rx buffer num: 32
+I (471) wifi_init: rx ba win: 6
+I (481) wifi_init: accept mbox: 6
+I (481) wifi_init: tcpip mbox: 32
+I (481) wifi_init: udp mbox: 6
+I (481) wifi_init: tcp mbox: 6
+I (491) wifi_init: tcp tx win: 5760
+I (491) wifi_init: tcp rx win: 5760
+I (491) wifi_init: tcp mss: 1440
+I (501) wifi_init: WiFi IRAM OP enabled
+I (501) wifi_init: WiFi RX IRAM OP enabled
+W (511) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+I (531) phy_init: phy_version 701,f4f1da3a,Mar  3 2025,15:50:10
+W (531) phy_init: failed to load RF calibration data (0x1102), falling back to full calibration
+I (581) phy_init: Saving new calibration data due to checksum failure or outdated calibration data, mode(2)
+I (591) wifi:mode : sta (1c:db:d4:af:1f:60)
+I (591) wifi:enable tsf
+I (591) WIFI_STA: WiFi STA initialized, connecting to SSID:OTA-GW
+I (591) WIFI_STA: WiFi STA start, trying to connect to OTA-GW...
+I (591) common_gpio: Starting GPIO initialization...
+I (681) common_gpio: STBY GPIO 17 set to HIGH
+I (681) common_gpio: Motor GPIOs initialized
+I (681) common_gpio: All GPIOs initialized
+I (691) wifi:new:<1,1>, old:<1,0>, ap:<255,255>, sta:<1,1>, prof:1, snd_ch_cfg:0x0
+I (691) wifi:state: init -> auth (0xb0)
+I (701) common_gpio: LEDC channels initialized
+I (701) wifi:state: auth -> assoc (0x0)
+I (711) common_gpio: Initializing I2C master...
+I (711) common_gpio: I2C master initialized
+I (711) wifi:state: assoc -> run (0x10)
+I (721) OTA_HANDLER: OTA Handler initialized, ota_flag=0
+I (721) OTA_HANDLER: No previous OTA task
+I (731) tcp_client: Connecting to GW 192.168.4.1:9001
+I (741) wifi:connected with OTA-GW, aid = 1, channel 1, 40U, bssid = dc:b4:d9:10:4d:b1
+I (741) wifi:security: WPA2-PSK, phy: bgn, rssi: -25
+E (741) tcp_client: Socket unable to connect: errno 118
+I (751) wifi:pm start, type: 1
+
+I (751) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us
+I (761) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000
+I (771) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (781) OTA_HANDLER: OTA Handler initialized, ota_flag=0
+I (781) client_register: Client register module initialized
+系统初始化完成，等待客户端连接...
+I (791) main_task: Returned from app_main()
+I (1791) esp_netif_handlers: sta ip: 192.168.4.2, mask: 255.255.255.0, gw: 192.168.4.1
+I (1791) WIFI_STA: Got IP: 192.168.4.2
+I (1791) WIFI_STA: Netmask: 255.255.255.0
+I (1791) WIFI_STA: Gateway: 192.168.4.1
+I (1791) WIFI_STA: Connected to OTA-GW (192.168.4.1), OTA Server reachable at 192.168.4.2

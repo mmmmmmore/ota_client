@@ -35,11 +35,11 @@ add_definitions(-DPROJECT_VER=\"${PROJECT_VER}\")
 
 # ====== 新增固件重命名规则 ======
 # 编译完成后，将生成的固件文件重命名为带版本号的文件
-add_custom_command(
-    TARGET ${CMAKE_PROJECT_NAME}.bin POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-            ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.bin
-            ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}_v${PROJECT_VER}.bin
-    COMMENT "Renaming firmware to ${CMAKE_PROJECT_NAME}_v${PROJECT_VER}.bin"
-)
+#add_custom_command(
+#    TARGET ${CMAKE_PROJECT_NAME}.bin POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy
+#            ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.bin
+#            ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}_v${PROJECT_VER}.bin
+#    COMMENT "Renaming firmware to ${CMAKE_PROJECT_NAME}_v${PROJECT_VER}.bin"
+#)
 
