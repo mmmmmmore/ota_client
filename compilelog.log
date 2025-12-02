@@ -1,5 +1,5 @@
+
 /Users/maochun/.espressif/tools/xtensa-esp-elf/esp-15.1.0_20250607/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/15.1.0/../../../../xtensa-esp-elf/bin/ld: esp-idf/tcp_client/libtcp_client.a(tcp_client.c.obj):(.literal.tcp_client_task+0x10): undefined reference to `msg_handler_process'
 /Users/maochun/.espressif/tools/xtensa-esp-elf/esp-15.1.0_20250607/xtensa-esp-elf/bin/../lib/gcc/xtensa-esp-elf/15.1.0/../../../../xtensa-esp-elf/bin/ld: esp-idf/tcp_client/libtcp_client.a(tcp_client.c.obj): in function `tcp_client_task':
 /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.c:90:(.text.tcp_client_task+0xe0): undefined reference to `msg_handler_process'
 collect2: error: ld returned 1 exit status
-ninja: build stopped: subcommand failed.
