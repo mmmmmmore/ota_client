@@ -27,6 +27,9 @@ set(PROJECT_VER "1.0.1" )
 # 定义项目名称和版本
 project(ota_client VERSION 1.0.1)
 
+add_definitions(-DPROJECT_VER="1.0.1")
+
+
 # SPIFFS 构建规则（如果启用）
 # spiffs_create_partition_image(spiffs spiffs FLASH_IN_PROJECT "spiffs")
 
@@ -39,3 +42,4 @@ add_custom_command(
             ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}_v${PROJECT_VER}.bin
     COMMENT "Renaming firmware to ${CMAKE_PROJECT_NAME}_v${PROJECT_VER}.bin"
 )
+
