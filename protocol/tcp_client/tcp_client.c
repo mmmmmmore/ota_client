@@ -4,13 +4,18 @@
 #include "lwip/netdb.h"
 #include <string.h>
 #include <unistd.h>
-#include "client_register.h"
-#include "msg_handler.h"
 
 static const char *TAG = "tcp_client";
 static int sock = -1;
 static char gw_ip_str[16] = {0};
 static uint16_t gw_port_num = 0;
+
+// 接收回调函数指针
+static tcp_receive_cb_t receive_cb = NULL;
+
+void tcp_client_set_receive_callback(tcp_receive_cb_t cb) {
+    receive_cb = cb;
+}
 
 esp_err_t tcp_client_start(const char *gw_ip, uint16_t gw_port) {
     struct sockaddr_in dest_addr;
@@ -35,12 +40,8 @@ esp_err_t tcp_client_start(const char *gw_ip, uint16_t gw_port) {
 
     ESP_LOGI(TAG, "Successfully connected to GW");
 
-    // 保存连接参数，便于断线重连
     strncpy(gw_ip_str, gw_ip, sizeof(gw_ip_str)-1);
     gw_port_num = gw_port;
-
-    // 连接成功后立即发送注册信息
-    client_register_send_register(sock);
 
     return ESP_OK;
 }
@@ -58,7 +59,6 @@ esp_err_t tcp_client_send(const char *json_str) {
     return ESP_OK;
 }
 
-
 int tcp_client_get_sock(void){
     return sock;
 }
@@ -67,7 +67,6 @@ void tcp_client_task(void *pvParameters) {
     char rx_buffer[512];
     while (1) {
         if (sock < 0) {
-            // 尝试重连
             if (strlen(gw_ip_str) > 0 && gw_port_num > 0) {
                 ESP_LOGI(TAG, "Trying to reconnect to GW...");
                 tcp_client_start(gw_ip_str, gw_port_num);
@@ -86,11 +85,13 @@ void tcp_client_task(void *pvParameters) {
             close(sock);
             sock = -1;
         } else {
-            rx_buffer[len] = 0; // Null-terminate
+            rx_buffer[len] = 0;
             ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
 
-            // 调用 msg_handler 统一处理消息
-            msg_handler_process(rx_buffer);
+            // 调用上层回调，不直接处理业务
+            if (receive_cb) {
+                receive_cb(rx_buffer, len);
+            }
         }
     }
 }
