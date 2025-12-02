@@ -12,4 +12,10 @@ config CLIENT_ID
     help
         Each ECU ID for GW identification
 
+config PROJECT_VER
+    string "Project Version"
+    default "1.0.1"
+    help 
+        this also need update when new Firemare integrate
+
 endmenu
