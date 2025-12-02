@@ -34,9 +34,11 @@ void platform_init(void) {
     ota_record_check();
 
     // 4. 初始化 TCP 客户端
-    tcp_client_start("192.168.4.1", 9001);
-    xTaskCreate(tcp_client_task, "tcp_client_task", 4096, NULL, 5, NULL);
+    tcp_client_set_receive_callback(msg_handler_process);   // 设置接收回调
+    tcp_client_start("192.168.4.1", 9001);                  // 建立连接
+    xTaskCreate(tcp_client_task, "tcp_client_task", 4096, NULL, 5, NULL); // 启动任务
 
+ 
     
     // 5. 初始化电机控制
     //motor_control_init();
@@ -52,4 +54,5 @@ void platform_init(void) {
 
 
 }
+
 
