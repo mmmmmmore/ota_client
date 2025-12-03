@@ -4,9 +4,8 @@ idf_component_register(
     INCLUDE_DIRS
         "."
     REQUIRES
-        esp_log
+        driver
         cJSON
-        tcp_client
         ota_handler
         client_register
 )
