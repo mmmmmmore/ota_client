@@ -3,10 +3,10 @@
 
 #include <stddef.h>
 
-// 初始化消息处理模块，设置 TCP 接收回调
+// 初始化消息处理模块
 void msg_handler_init(void);
 
-// TCP 客户端连接成功时调用，触发注册逻辑
+// TCP 客户端连接成功时调用
 void msg_handler_on_connected(int sock);
 
 // 处理收到的 JSON 消息
