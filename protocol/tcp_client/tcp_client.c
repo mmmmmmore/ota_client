@@ -43,7 +43,8 @@ esp_err_t tcp_client_start(const char *gw_ip, uint16_t gw_port) {
     strncpy(gw_ip_str, gw_ip, sizeof(gw_ip_str)-1);
     gw_port_num = gw_port;
 
-    return ESP_OK;
+    // 通知 msg_handler 连接成功
+    msg_handler_on_connected(sock);
 }
 
 esp_err_t tcp_client_send(const char *json_str) {
@@ -95,4 +96,5 @@ void tcp_client_task(void *pvParameters) {
         }
     }
 }
+
 
