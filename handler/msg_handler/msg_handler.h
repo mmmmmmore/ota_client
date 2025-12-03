@@ -1,12 +1,15 @@
 #ifndef MSG_HANDLER_H
 #define MSG_HANDLER_H
 
-#include "esp_err.h"
+#include <stddef.h>
 
-// 处理从 GW 收到的消息
-// msg_handler.h
+// 初始化消息处理模块，设置 TCP 接收回调
+void msg_handler_init(void);
+
+// TCP 客户端连接成功时调用，触发注册逻辑
+void msg_handler_on_connected(int sock);
+
+// 处理收到的 JSON 消息
 void msg_handler_process(const char *json_str, size_t len);
 
-
 #endif // MSG_HANDLER_H
-
