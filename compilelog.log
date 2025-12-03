@@ -1,8 +1,8 @@
--Wl,--end-group && cd /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build && /usr/local/bin/cmake -E copy /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/ota_client.bin /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/ota_client_v1.0.1.bin
-Error copying file "/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/ota_client.bin" to "/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/ota_client_v1.0.1.bin".
-ninja: build stopped: subcommand failed.
-ninja failed with exit code 1, output of the command is in the /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/log/idf_py_stderr_output_89207 and /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/log/idf_py_stdout_output_89207
-maochun@MMMBP ota_client % ls -l build/*.bin
-zsh: no matches found: build/*.bin
-maochun@MMMBP ota_client % ls -l build/*.elf
--rwxr-xr-x  1 maochun  staff  10292628 Dec  2 16:43 build/ota_client.elf
+t.c.obj -c /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.c
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.c: In function 'tcp_client_start':
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.c:47:5: error: implicit declaration of function 'msg_handler_on_connected' [-Wimplicit-function-declaration]
+   47 |     msg_handler_on_connected(sock);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.c:48:1: error: control reaches end of non-void function [-Werror=return-type]
+   48 | }
+      | ^
