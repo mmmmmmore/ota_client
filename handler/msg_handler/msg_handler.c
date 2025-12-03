@@ -7,19 +7,17 @@
 
 static const char *TAG = "msg_handler";
 
-// 初始化：设置 TCP 接收回调
 void msg_handler_init(void) {
     ESP_LOGI(TAG, "Message handler initialized");
     tcp_client_set_receive_callback(msg_handler_process);
+    tcp_client_set_connected_callback(msg_handler_on_connected);
 }
 
-// 当 TCP 连接建立成功时调用
 void msg_handler_on_connected(int sock) {
     ESP_LOGI(TAG, "TCP connection established, sending client register");
     client_register_send_register(sock);
 }
 
-// 处理收到的 JSON 消息
 void msg_handler_process(const char *json_str, size_t len) {
     cJSON *root = cJSON_Parse(json_str);
     if (!root) {
