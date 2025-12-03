@@ -45,6 +45,7 @@ void platform_init(void) {
     //led_control_init();
     
     ota_handler_init();
+    msg_handler_init();
 
     //6. register client init
     client_register_init();
