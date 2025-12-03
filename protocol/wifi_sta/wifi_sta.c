@@ -13,7 +13,7 @@ static bool s_handlers_registered = false;
 #define OTA_GW_SSID      "OTA-GW"
 #define OTA_GW_PASSWORD  "niwenwoa"
 #define GW_IP            "192.168.4.1"
-#define GW_PORT          9001
+#define GW_PORT          9002
 #define GW_GATEWAY_IP    ESP_IP4TOADDR(192,168,4,1)
 
 // 外部依赖
@@ -106,3 +106,4 @@ esp_err_t wifi_sta_init(void) {
 bool wifi_sta_is_connected(void) {
     return s_connected;
 }
+
