@@ -10,11 +10,15 @@ static int sock = -1;
 static char gw_ip_str[16] = {0};
 static uint16_t gw_port_num = 0;
 
-// 接收回调函数指针
 static tcp_receive_cb_t receive_cb = NULL;
+static tcp_connected_cb_t connected_cb = NULL;
 
 void tcp_client_set_receive_callback(tcp_receive_cb_t cb) {
     receive_cb = cb;
+}
+
+void tcp_client_set_connected_callback(tcp_connected_cb_t cb) {
+    connected_cb = cb;
 }
 
 esp_err_t tcp_client_start(const char *gw_ip, uint16_t gw_port) {
@@ -43,8 +47,12 @@ esp_err_t tcp_client_start(const char *gw_ip, uint16_t gw_port) {
     strncpy(gw_ip_str, gw_ip, sizeof(gw_ip_str)-1);
     gw_port_num = gw_port;
 
-    // 通知 msg_handler 连接成功
-    msg_handler_on_connected(sock);
+    // 通知上层连接成功
+    if (connected_cb) {
+        connected_cb(sock);
+    }
+
+    return ESP_OK;
 }
 
 esp_err_t tcp_client_send(const char *json_str) {
@@ -60,7 +68,7 @@ esp_err_t tcp_client_send(const char *json_str) {
     return ESP_OK;
 }
 
-int tcp_client_get_sock(void){
+int tcp_client_get_sock(void) {
     return sock;
 }
 
@@ -89,12 +97,9 @@ void tcp_client_task(void *pvParameters) {
             rx_buffer[len] = 0;
             ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
 
-            // 调用上层回调，不直接处理业务
             if (receive_cb) {
                 receive_cb(rx_buffer, len);
             }
         }
     }
 }
-
-
