@@ -3,7 +3,7 @@
 
 #include "esp_err.h"
 
-#define OTA_VER "1.0.1"
+#define OTA_VER "1.1.0"
 
 // 初始化客户端注册模块
 void client_register_init(void);

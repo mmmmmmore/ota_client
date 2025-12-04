@@ -20,12 +20,12 @@ set(EXTRA_COMPONENT_DIRS
 
 # ====== 新增版本号配置 ======
 # 可以在命令行通过 -DPROJECT_VER=1.0.1 覆盖
-set(PROJECT_VER "1.0.1" )
+set(PROJECT_VER "1.1.0" )
 
 # 2.0.1 as big change version, add ota feature
 
 # 定义项目名称和版本
-project(ota_client VERSION 1.0.1)
+project(ota_client VERSION 1.1.0)
 
 add_definitions(-DPROJECT_VER=\"${PROJECT_VER}\")
 

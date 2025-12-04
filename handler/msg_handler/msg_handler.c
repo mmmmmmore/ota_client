@@ -34,7 +34,7 @@ void msg_handler_process(const char *json_str, size_t len) {
         } else if (strcmp(msg_type->valuestring, "sync_request") == 0) {
             ESP_LOGI(TAG, "GW requested re-register");
             client_register_send_register(tcp_client_get_sock());
-        } else if (strcmp(msg_type->valuestring, "ota") == 0) {
+        } else if (strcmp(msg_type->valuestring, "ota_task") == 0) {
             ESP_LOGI(TAG, "Received OTA task");
             ota_handler_process(json_str);
         } else if (strcmp(msg_type->valuestring, "keep_alive") == 0) {
