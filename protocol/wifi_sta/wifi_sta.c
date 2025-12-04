@@ -4,10 +4,10 @@
 #include "esp_event.h"
 #include "esp_netif.h"
 #include <string.h>
+
 // 外部依赖
 #include "tcp_client.h"
 #include "msg_handler.h"
-
 
 static const char *TAG = "WIFI_STA";
 static bool s_connected = false;
@@ -20,20 +20,18 @@ static bool s_handlers_registered = false;
 #define GW_PORT          9002
 #define GW_GATEWAY_IP    ESP_IP4TOADDR(192,168,4,1)
 
-
-
 // Wi-Fi事件处理函数
 static void wifi_event_handler(void* arg, esp_event_base_t event_base,
                                int32_t event_id, void* event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
-        esp_wifi_connect();
         ESP_LOGI(TAG, "WiFi STA start, trying to connect to OTA-GW...");
+        esp_wifi_connect();
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         s_connected = false;
         if (retry_count < 5) {
-            esp_wifi_connect();
             retry_count++;
             ESP_LOGW(TAG, "Disconnected, retrying... (%d)", retry_count);
+            esp_wifi_connect();
         } else {
             ESP_LOGE(TAG, "Failed to connect to OTA-GW after 5 retries");
         }
@@ -67,6 +65,9 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base,
 
 esp_err_t wifi_sta_init(void) {
     // 注意：esp_netif_init() 与 esp_event_loop_create_default() 应在 app_main() 里做一次
+    // 如需在此调用，请确保只初始化一次
+    // ESP_ERROR_CHECK(esp_netif_init());
+    // ESP_ERROR_CHECK(esp_event_loop_create_default());
 
     esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
     if (!sta_netif) {
@@ -90,33 +91,33 @@ esp_err_t wifi_sta_init(void) {
         s_handlers_registered = true;
     }
 
-    // 配置 STA
+    // 先设置模式
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+
+    // 配置 STA（一次性在 esp_wifi_start 之前 set_config）
     wifi_config_t wifi_config = {0};
     strncpy((char*)wifi_config.sta.ssid, OTA_GW_SSID, sizeof(wifi_config.sta.ssid)-1);
     strncpy((char*)wifi_config.sta.password, OTA_GW_PASSWORD, sizeof(wifi_config.sta.password)-1);
-    wifi_config.sta.pmf_cfg.capable  = true;  //support PMF
-    wifi_config.sta.pmf_cfg.required = false; //avoid disconnect 
 
-    // 设置 listen_interval，避免 AP 误判掉线
-    wifi_config.sta.listen_interval = 3;   // 每 3 个 beacon 间隔唤醒一次
+    // PMF：capable 但不强制，避免 SA Query 误断连
+    wifi_config.sta.pmf_cfg.capable  = true;
+    wifi_config.sta.pmf_cfg.required = false;
+
+    // 适度唤醒频率，降低误判
+    wifi_config.sta.listen_interval = 3;
+
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
+
+    // 启动 Wi-Fi
     ESP_ERROR_CHECK(esp_wifi_start());
+
+    // 关闭省电，确保管理帧响应及时（关键）
     ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
 
-
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start());
-
-    // 启用 Wi-Fi Power Save 模式（自动发送 Null Data Frame 保活）
-    //ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_MIN_MODEM));
-    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
-
-    ESP_LOGI(TAG, "WiFi STA initialized, connecting to SSID:%s with Power Save enabled", OTA_GW_SSID);
+    ESP_LOGI(TAG, "WiFi STA initialized, SSID:%s, PMF:capable/not-required, PS:NONE", OTA_GW_SSID);
     return ESP_OK;
 }
 
 bool wifi_sta_is_connected(void) {
     return s_connected;
 }
-
