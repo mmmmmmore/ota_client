@@ -37,6 +37,10 @@ void msg_handler_process(const char *json_str, size_t len) {
         } else if (strcmp(msg_type->valuestring, "ota") == 0) {
             ESP_LOGI(TAG, "Received OTA task");
             ota_handler_process(json_str);
+        } else if (strcmp(msg_type->valuestring, "keep_alive") == 0) {
+            const char *ack_msg = "{\"msg_type\":\"keep_alive_ack\"}";
+            send(sock, ack_msg, strlen(ack_msg), 0);
+            ESP_LOGI(TAG, "Sent keep_alive_ack to GW");
         } else {
             ESP_LOGW(TAG, "Unknown msg_type: %s", msg_type->valuestring);
         }
@@ -44,3 +48,4 @@ void msg_handler_process(const char *json_str, size_t len) {
 
     cJSON_Delete(root);
 }
+
