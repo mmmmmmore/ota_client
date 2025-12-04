@@ -19,7 +19,7 @@ void msg_handler_on_connected(int sock) {
     client_register_send_register(sock);
 }
 
-void msg_handler_process(const char *json_str, size_t len) {
+void msg_handler_process( const char *json_str, size_t len) {
     cJSON *root = cJSON_Parse(json_str);
     if (!root) {
         ESP_LOGW(TAG, "Invalid JSON received: %s", json_str);
@@ -40,6 +40,7 @@ void msg_handler_process(const char *json_str, size_t len) {
             ota_handler_process(json_str);
         } else if (strcmp(msg_type->valuestring, "keep_alive") == 0) {
             const char *ack_msg = "{\"msg_type\":\"keep_alive_ack\"}";
+            int sock = tcp_client_get_sock();  //get current socket sq
             send(sock, ack_msg, strlen(ack_msg), 0);
             ESP_LOGI(TAG, "Sent keep_alive_ack to GW");
         } else {

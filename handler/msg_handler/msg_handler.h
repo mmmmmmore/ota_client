@@ -10,6 +10,6 @@ void msg_handler_init(void);
 void msg_handler_on_connected(int sock);
 
 // 处理收到的 JSON 消息
-void msg_handler_process(const char *json_str, size_t len);
+void msg_handler_process( const char *json_str, size_t len);
 
 #endif // MSG_HANDLER_H
