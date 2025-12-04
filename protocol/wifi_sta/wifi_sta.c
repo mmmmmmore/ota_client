@@ -4,6 +4,10 @@
 #include "esp_event.h"
 #include "esp_netif.h"
 #include <string.h>
+// 外部依赖
+#include "tcp_client.h"
+#include "msg_handler.h"
+
 
 static const char *TAG = "WIFI_STA";
 static bool s_connected = false;
@@ -16,9 +20,7 @@ static bool s_handlers_registered = false;
 #define GW_PORT          9002
 #define GW_GATEWAY_IP    ESP_IP4TOADDR(192,168,4,1)
 
-// 外部依赖
-#include "tcp_client.h"
-#include "msg_handler.h"
+
 
 // Wi-Fi事件处理函数
 static void wifi_event_handler(void* arg, esp_event_base_t event_base,
@@ -65,9 +67,7 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base,
 
 esp_err_t wifi_sta_init(void) {
     // 注意：esp_netif_init() 与 esp_event_loop_create_default() 应在 app_main() 里做一次
-    // 这里不再重复调用，避免 ESP_ERR_INVALID_STATE 触发 panic
 
-    // 创建默认 STA 接口（如果已创建，返回 NULL，不报错）
     esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
     if (!sta_netif) {
         ESP_LOGW(TAG, "Default WiFi STA already exists or failed to create; continuing.");
@@ -95,15 +95,20 @@ esp_err_t wifi_sta_init(void) {
     strncpy((char*)wifi_config.sta.ssid, OTA_GW_SSID, sizeof(wifi_config.sta.ssid)-1);
     strncpy((char*)wifi_config.sta.password, OTA_GW_PASSWORD, sizeof(wifi_config.sta.password)-1);
 
+    // 设置 listen_interval，避免 AP 误判掉线
+    wifi_config.sta.listen_interval = 3;   // 每 3 个 beacon 间隔唤醒一次
+
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
 
-    ESP_LOGI(TAG, "WiFi STA initialized, connecting to SSID:%s", OTA_GW_SSID);
+    // 启用 Wi-Fi Power Save 模式（自动发送 Null Data Frame 保活）
+    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_MIN_MODEM));
+
+    ESP_LOGI(TAG, "WiFi STA initialized, connecting to SSID:%s with Power Save enabled", OTA_GW_SSID);
     return ESP_OK;
 }
 
 bool wifi_sta_is_connected(void) {
     return s_connected;
 }
-
