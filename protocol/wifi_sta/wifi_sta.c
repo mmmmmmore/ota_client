@@ -94,16 +94,21 @@ esp_err_t wifi_sta_init(void) {
     wifi_config_t wifi_config = {0};
     strncpy((char*)wifi_config.sta.ssid, OTA_GW_SSID, sizeof(wifi_config.sta.ssid)-1);
     strncpy((char*)wifi_config.sta.password, OTA_GW_PASSWORD, sizeof(wifi_config.sta.password)-1);
+    wifi_config.sta.pmf_cfg.capable  = true;  //support PMF
+    wifi_config.sta.pmf_cfg.required = false; //avoid disconnect 
 
     // 设置 listen_interval，避免 AP 误判掉线
     wifi_config.sta.listen_interval = 3;   // 每 3 个 beacon 间隔唤醒一次
+    
+
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
 
     // 启用 Wi-Fi Power Save 模式（自动发送 Null Data Frame 保活）
-    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_MIN_MODEM));
+    //ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_MIN_MODEM));
+    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
 
     ESP_LOGI(TAG, "WiFi STA initialized, connecting to SSID:%s with Power Save enabled", OTA_GW_SSID);
     return ESP_OK;
