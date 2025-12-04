@@ -8,4 +8,5 @@ idf_component_register(
         cJSON
         ota_handler
         client_register
+        lwip
 )

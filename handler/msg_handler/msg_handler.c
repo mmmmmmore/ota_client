@@ -4,6 +4,7 @@
 #include "ota_handler.h"
 #include "client_register.h"
 #include "tcp_client.h"
+#include "lwip/sockets.h"
 
 static const char *TAG = "msg_handler";
 
