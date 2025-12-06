@@ -11,5 +11,5 @@ idf_component_register(
         wifi_sta tcp_client
         cJSON
     EMBED_TXTFILES 
-        "server_cert.pem"
+        "rootCA.pem"
         )

@@ -12,6 +12,9 @@
 extern const char server_cert_pem_start[] asm("_binary_server_cert_pem_start");
 extern const char server_cert_pem_end[]   asm("_binary_server_cert_pem_end");
 
+extern const char rootCA_pem_start[] asm("_binary_rootCA_pem_start");
+extern const char rootCA_pem_end[]   asm("_binary_rootCA_pem_end");
+
 static const char *TAG = "OTA_HANDLER";
 static const char *NVS_NAMESPACE = "ota_ns";
 static const char *NVS_KEY_FLAG = "ota_flag";
@@ -58,7 +61,7 @@ void ota_handler_process(const char *task_json) {
         return;
     }
 
-    const char *url = cJSON_GetObjectItem(root, "url")->valuestring;
+    const char *url = cJSON_GetObjectItem(root, "firmware_url")->valuestring;
     ESP_LOGI(TAG, "Starting OTA from URL: %s", url);
 
     // 设置 ota_flag = true，表示有 OTA 任务
@@ -67,7 +70,7 @@ void ota_handler_process(const char *task_json) {
     // HTTP 客户端配置，加入证书
     esp_http_client_config_t http_config = {
         .url = url,
-        .cert_pem = server_cert_pem_start, // 使用 server_cert.pem
+        .cert_pem = rootCA_pem_start, // 使用 server_cert.pem
     };
 
     // OTA 配置
