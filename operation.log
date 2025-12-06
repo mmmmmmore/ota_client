@@ -1,82 +1,39 @@
-
-I (436) main_task: Calling app_main()
-ESP32S3 Boot Success...
-I (456) pp: pp rom version: e7ae62f
-I (456) net80211: net80211 rom version: e7ae62f
-I (466) wifi:wifi driver task: 3fced4c8, prio:23, stack:6656, core=0
-I (476) wifi:wifi firmware version: df85326
-I (476) wifi:wifi certification version: v7.0
-I (476) wifi:config NVS flash: enabled
-I (476) wifi:config nano formatting: disabled
-I (476) wifi:Init data frame dynamic rx buffer num: 32
-I (486) wifi:Init static rx mgmt buffer num: 5
-I (486) wifi:Init management short buffer num: 32
-I (486) wifi:Init dynamic tx buffer num: 32
-I (496) wifi:Init static tx FG buffer num: 2
-I (496) wifi:Init static rx buffer size: 1600
-I (506) wifi:Init static rx buffer num: 10
-I (506) wifi:Init dynamic rx buffer num: 32
-I (506) wifi_init: rx ba win: 6
-I (516) wifi_init: accept mbox: 6
-I (516) wifi_init: tcpip mbox: 32
-I (516) wifi_init: udp mbox: 6
-I (526) wifi_init: tcp mbox: 6
-I (526) wifi_init: tcp tx win: 5760
-I (526) wifi_init: tcp rx win: 5760
-I (526) wifi_init: tcp mss: 1440
-I (536) wifi_init: WiFi IRAM OP enabled
-I (536) wifi_init: WiFi RX IRAM OP enabled
-W (546) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
-I (546) phy_init: phy_version 701,f4f1da3a,Mar  3 2025,15:50:10
-I (626) wifi:mode : sta (1c:db:d4:af:1f:60)
-I (626) wifi:enable tsf
-I (636) wifi:Set ps type: 0, coexist: 0
-
-I (636) WIFI_STA: WiFi STA start, trying to connect to OTA-GW...
-E (636) wifi:sta is connecting, cannot set config
-I (646) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
-I (646) wifi:state: init -> auth (0xb0)
-ESP_ERROR_CHECK failed: esp_errI (656) wifi:state: auth -> assoc (0x0)
-_t 0x3006 (ESP_ERR_WIFI_STATE) at 0x4200c24c
---- 0x4200c24c: wifi_sta_init at /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/wifi_sta/wifi_sta.c:108
-file: "./protocol/wifi_sta/wifi_sta.c" line 108
-func: wI (666) wifi:state: assoc -> run (0x10)
-ifi_sta_init
-expression: esp_wifi_set_config(WIFI_IF_STA, &wifi_config)
-
-abort() was called at PC 0x4037c6b7 on core 0
---- 0x4037c6b7: _esp_error_check_failed at /Users/maochun/esp32prj/esp-idf/components/esp_system/esp_err.c:49
+20251206-114300
 
 
-Backtrace: 0x4037c6f9:0x3fca5810 0x4037c6c1:0x3fca5830 0x403829a9:0x3fca5850 0x4037c6b7:0x3fca58c0 0x4200c24c:0x3fca58f0 0x4200be95:0x3fca5a60 0x420079ac:0x3fca5a80 0x420a8ac6:0x3fca5ab0
---- 0x4037c6f9: panic_abort at /Users/maochun/esp32prj/esp-idf/components/esp_system/panic.c:480
---- 0x4037c6c1: esp_system_abort at /Users/maochun/esp32prj/esp-idf/components/esp_system/port/esp_system_chip.c:87
---- 0x403829a9: abort at /Users/maochun/esp32prj/esp-idf/components/newlib/src/abort.c:38
---- 0x4037c6b7: _esp_error_check_failed at /Users/maochun/esp32prj/esp-idf/components/esp_system/esp_err.c:49
---- 0x4200c24c: wifi_sta_init at /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/wifi_sta/wifi_sta.c:108
---- 0x4200be95: app_main at /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/main/main.c:33
---- 0x420079ac: main_task at /Users/maochun/esp32prj/esp-idf/components/freertos/app_startup.c:208
---- 0x420a8ac6: vPortTaskWrapper at /Users/maochun/esp32prj/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:139
+I (56922) msg_handler: Sent keep_alive_ack to GW
+I (61912) tcp_client: Received 26 bytes: {"msg_type":"keep_alive"}
+
+I (61922) msg_handler: Sent keep_alive_ack to GW
+I (66922) tcp_client: Received 26 bytes: {"msg_type":"keep_alive"}
+
+I (66922) msg_handler: Sent keep_alive_ack to GW
+I (71342) tcp_client: Received 203 bytes: {"msg_type":"ota_task","task_id":"20251206_114234_758","device_name":"Veh1_SCM1","client_id":"758","version":"v2.1.4","firmware_url":"https://192.168.4.2:8080/firmware/firmware_v2.1.4.bin","features":""}
+I (71362) msg_handler: Received OTA task
+Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Exception was unhandled.
+
+Core  0 register dump:
+PC      : 0x4200c9a2  PS      : 0x00060c30  A0      : 0x8200c4d6  A1      : 0x3fcaf440  
+--- 0x4200c9a2: ota_handler_process at /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:61
+A2      : 0x3fca4ecc  A3      : 0x3c0b5fb0  A4      : 0x3c0b60cc  A5      : 0x000116c2  
+A6      : 0x3c0b5fb0  A7      : 0x40404040  A8      : 0x8200c9a2  A9      : 0x3fcaf420  
+A10     : 0x00000000  A11     : 0x3c0b64b4  A12     : 0x3fcaf4e0  A13     : 0x0000000c  
+A14     : 0x3c0b633e  A15     : 0x3fcaf3a0  SAR     : 0x0000000e  EXCCAUSE: 0x0000001c  
+EXCVADDR: 0x00000010  LBEG    : 0x400570e8  LEND    : 0x400570f3  LCOUNT  : 0x00000000  
+--- 0x400570e8: memset in ROM
+--- 0x400570f3: memset in ROM
+
+
+Backtrace: 0x4200c99f:0x3fcaf440 0x4200c4d3:0x3fcaf520 0x4200c819:0x3fcaf540 0x420a8a72:0x3fcaf770
+--- 0x4200c99f: ota_handler_process at /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:61
+--- 0x4200c4d3: msg_handler_process at /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/msg_handler/msg_handler.c:40
+--- 0x4200c819: tcp_client_task at /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/protocol/tcp_client/tcp_client.c:101
+--- 0x420a8a72: vPortTaskWrapper at /Users/maochun/esp32prj/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:139
 
 
 
 
-ELF file SHA256: 5c60968f2
+ELF file SHA256: caf258732
 
 Rebooting...
 ���ESP-ROM:esp32s3-20210327
-Build:Mar 27 2021
-rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
-Saved PC:0x4037c849
---- 0x4037c849: esp_restart_noos at /Users/maochun/esp32prj/esp-idf/components/esp_system/port/soc/esp32s3/system_internal.c:164
-SPIWP:0xee
-mode:DIO, clock div:1
-load:0x3fce2820,len:0x1588
-load:0x403c8700,len:0xd7c
---- 0x403c8700: _stext at ??:?
-load:0x403cb700,len:0x2f80
-entry 0x403c8908
---- 0x403c8908: call_start_cpu0 at /Users/maochun/esp32prj/esp-idf/components/bootloader/subproject/main/bootloader_start.c:25
-I (29) boot: ESP-IDF v6.0-dev-2039-g2044fba6e7 2nd stage bootloader
-I (29) boot: compile time Dec  3 2025 11:35:04
-I (29) boot: Multicore bootloader
