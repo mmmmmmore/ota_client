@@ -1,3 +1,26 @@
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/msg_handler/msg_handler.c: In function 'msg_handler_process':
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/msg_handler/msg_handler.c:43:18: error: 'sock' undeclared (first use in this function); did you mean 'socket'?
-   43 |             send(sock, ack_msg, strlen(ack_msg), 0);
+
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c: In function 'client_send_ota_result':
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:138:1: error: control reaches end of non-void function [-Werror=return-type]
+  138 | }
+      | ^
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c: In function 'send_json_gw':
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:168:1: error: control reaches end of non-void function [-Werror=return-type]
+  168 | }
+      | ^
+In file included from /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:3:
+/Users/maochun/esp32prj/esp-idf/components/log/include/esp_log.h:224:65: warning: pointer 'progress_str' used after 'free' [-Wuse-after-free]
+  224 |         else                                                  { esp_log(ESP_LOG_CONFIG_INIT(ESP_LOG_INFO),    tag, LOG_FORMAT(I, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/maochun/esp32prj/esp-idf/components/log/include/esp_log.h:165:94: note: in expansion of macro 'ESP_LOG_LEVEL'
+  165 | #define ESP_LOG_LEVEL_LOCAL(configs, tag, format, ...) do { if (_ESP_LOG_ENABLED(configs)) { ESP_LOG_LEVEL(configs, tag, format, ##__VA_ARGS__); } } while(0)
+      |                                                                                              ^~~~~~~~~~~~~
+/Users/maochun/esp32prj/esp-idf/components/log/include/esp_log.h:127:41: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  127 | #define ESP_LOGI(tag, format, ...) do { ESP_LOG_LEVEL_LOCAL(ESP_LOG_INFO, tag, format, ##__VA_ARGS__); } while(0)
+      |                                         ^~~~~~~~~~~~~~~~~~~
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:166:5: note: in expansion of macro 'ESP_LOGI'
+  166 |     ESP_LOGI(TAG, "Send ota progress DWLD_DONE : %s", progress_str);
+      |     ^~~~~~~~
+/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:164:5: note: call to 'free' here
+  164 |     free(progress_str);
+      |     ^~~~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
