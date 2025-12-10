@@ -17,6 +17,8 @@ void msg_handler_init(void) {
 void msg_handler_on_connected(int sock) {
     ESP_LOGI(TAG, "TCP connection established, sending client register");
     client_register_send_register(sock);
+    // ota send result json
+    client_send_ota_result(sock); 
 }
 
 void msg_handler_process( const char *json_str, size_t len) {
