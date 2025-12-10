@@ -53,12 +53,20 @@ esp_err_t client_register_send_register(int sock) {
     cJSON_AddStringToObject(root, "ip", ip_str);
 
     char *json_str = cJSON_PrintUnformatted(root);
+    int json_len = strlen(json_str);
+
     ESP_LOGI(TAG, "Sending register info to GW: %s", json_str);
 
-    esp_err_t ret = tcp_client_send(json_str);
+    char *json_with_newline = malloc(json_len + 2) ;
+    if (json_with_newline){
+        memcpy(json_with_newline, json_str, json_len);
+        json_with_newline[json_len] = '\n';
+        json_with_newline[json_len+1]='\0';
+        return tcp_client_send(json_with_newline);
+        free(json_with_newline);
+    }
 
     cJSON_Delete(root);
     free(json_str);
 
-    return ret;
 }

@@ -54,11 +54,11 @@ void ota_handler_init(void) {
 }
 
 // 保存 ota_flag and task_id;
-static void ota_set_flag_task(const char *task_id) {
+static void ota_set_flag_task(bool ota_flag , const char *task_id) {
     nvs_handle_t nvs;
     if (nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs) == ESP_OK){
         // save ota_flag
-        nvs_set_u8(nvs, NVS_KEY_FLAG, 1);
+        nvs_set_u8(nvs, NVS_KEY_FLAG, ota_flag);
         // save task id 
         nvs_set_str(nvs, NVS_KEY_TASKID, task_id);
         nvs_commit(nvs);
@@ -94,9 +94,18 @@ esp_err_t client_send_ota_result(int sock) {
         cJSON_AddStringToObject(root, "state", "complete");
 
         char *json_str = cJSON_PrintUnformatted(root);  //transfer to string format
+        int json_len = strlen(json_str);
+
         ESP_LOGI(TAG, "Sending register info to GW: %s", json_str);
 
-        esp_err_t ret = tcp_client_send(json_str);
+        char *json_with_newline = malloc(json_len + 2) ;
+        if (json_with_newline){
+            memcpy(json_with_newline, json_str, json_len);
+            json_with_newline[json_len] = '\n';
+            json_with_newline[json_len+1]='\0';
+            return tcp_client_send(json_with_newline);
+            free(json_with_newline);
+        }
 
         cJSON_Delete(root);
         free(json_str);
@@ -107,18 +116,26 @@ esp_err_t client_send_ota_result(int sock) {
         cJSON_AddStringToObject(root, "state", "NA");
 
         char *json_str = cJSON_PrintUnformatted(root);  //transfer to string format
-        ESP_LOGI(TAG, "Sending register info to GW: %s", json_str);
+        int json_len = strlen(json_str);
 
-        esp_err_t ret = tcp_client_send(json_str);
+        ESP_LOGI(TAG, "Sending OTA state info to GW: %s", json_str);
+
+        char *json_with_newline = malloc(json_len + 2) ;
+        if (json_with_newline){
+            memcpy(json_with_newline, json_str, json_len);
+            json_with_newline[json_len] = '\n';
+            json_with_newline[json_len+1]='\0';
+            return tcp_client_send(json_with_newline);
+            free(json_with_newline);
+        }
 
         cJSON_Delete(root);
         free(json_str);
+
     }
 
     ota_handler_clear_flag();
 }
-
-
 
 
 static void send_json_gw(const char *task_json){
@@ -128,12 +145,25 @@ static void send_json_gw(const char *task_json){
     const char *task_id = cJSON_GetObjectItem(root, "task_id")->valuestring;
     cJSON_AddStringToObject(progress, "msg_type", "ota_progress");
     cJSON_AddStringToObject(progress, "task_id", task_id);
-    cJSON_AddObjectToObject(progress, "state", "DWLD_DONE");
+    cJSON_AddStringToObject(progress, "state", "DWLD_DONE");
     char *progress_str = cJSON_PrintUnformatted(progress);
-    tcp_client_send(progress_str);
-    ESP_LOGI(TAG, "Send ota progress DWLD_DONE : %s", progress_str);
-    cJSON_Delete(progress);
+    int json_len = strlen(progress_str);
+
+    ESP_LOGI(TAG, "Sending progress info to GW: %s", progress_str);
+
+    char *json_with_newline = malloc(json_len + 2) ;
+    if (json_with_newline){
+        memcpy(json_with_newline, progress_str, json_len);
+        json_with_newline[json_len] = '\n';
+        json_with_newline[json_len+1]='\0';
+        return tcp_client_send(json_with_newline);
+        free(json_with_newline);
+    }
+
+    cJSON_Delete(root);
     free(progress_str);
+
+    ESP_LOGI(TAG, "Send ota progress DWLD_DONE : %s", progress_str);
 
 }
 
@@ -146,13 +176,14 @@ void ota_handler_process(const char *task_json) {
     }
 
     const char *url       = cJSON_GetObjectItem(root, "firmware_url")->valuestring;
+    const char *task_id   = cJSON_GetObjectItem(root, "task_id")->valuestring;
     ESP_LOGI(TAG, "Starting OTA from URL: %s", url);
 
     // 设置 ota_flag = true，表示有 OTA 任务
-    ota_set_flag(true);
+    ota_set_flag_task(1, task_id);
     //send DWLD_DONE to GW. 
     //constrcut ota_task_progress json to GW
-    cJSON *progress = cJSON_CreateObject();
+    //cJSON *progress = cJSON_CreateObject();
     send_json_gw(task_json);
 
     //delay 5s then download and upgrade.
@@ -179,8 +210,8 @@ void ota_handler_process(const char *task_json) {
         esp_restart();
     } else {
         ESP_LOGE(TAG, "OTA Failed");
-        ota_set_flag(false); // 清除标志
-        ota_report_result("unknown", false);
+        ota_set_flag_task(0, task_id); // 清除标志
+        //ota_report_result("unknown", false);
     }
 
     cJSON_Delete(root);
@@ -199,20 +230,6 @@ void ota_record_check(void) {
 
     ESP_LOGI(TAG, "OTA record found, current version=%s", version);
 
-    // 上报成功结果
-    ota_report_result(version, true);
-
-    // 清除标志
-    ota_set_flag(false);
 }
 
-// 上报结果给 GW
-void ota_report_result(const char *version, bool success) {
-    char buffer[256];
-    snprintf(buffer, sizeof(buffer),
-             "{\"client\":\"Client_1\",\"version\":\"%s\",\"result\":\"%s\"}",
-             version, success ? "success" : "fail");
 
-    tcp_client_send(buffer);
-    ESP_LOGI(TAG, "Reported OTA result: %s", buffer);
-}
