@@ -62,11 +62,13 @@ esp_err_t client_register_send_register(int sock) {
         memcpy(json_with_newline, json_str, json_len);
         json_with_newline[json_len] = '\n';
         json_with_newline[json_len+1]='\0';
-        return tcp_client_send(json_with_newline);
+        esp_err_t ret;
+        ret = tcp_client_send(json_with_newline);
         free(json_with_newline);
+        return ret;
     }
 
     cJSON_Delete(root);
     free(json_str);
-
+    return ESP_OK;
 }
