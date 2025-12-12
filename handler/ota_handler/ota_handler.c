@@ -103,8 +103,10 @@ esp_err_t client_send_ota_result(int sock) {
             memcpy(json_with_newline, json_str, json_len);
             json_with_newline[json_len] = '\n';
             json_with_newline[json_len+1]='\0';
-            return tcp_client_send(json_with_newline);
+            esp_err_t ret;
+            ret = tcp_client_send(json_with_newline);
             free(json_with_newline);
+            return ret;
         }
 
         cJSON_Delete(root);
@@ -125,20 +127,22 @@ esp_err_t client_send_ota_result(int sock) {
             memcpy(json_with_newline, json_str, json_len);
             json_with_newline[json_len] = '\n';
             json_with_newline[json_len+1]='\0';
-            return tcp_client_send(json_with_newline);
+            esp_err_t ret;
+            ret = tcp_client_send(json_with_newline);
             free(json_with_newline);
+            return ret;
         }
 
         cJSON_Delete(root);
         free(json_str);
 
     }
-
     ota_handler_clear_flag();
+    return ESP_OK;
 }
 
 
-static void send_json_gw(const char *task_json){
+static esp_err_t send_json_gw(const char *task_json){
     // 构造 JSON
     cJSON *root = cJSON_Parse(task_json);
     cJSON *progress = cJSON_CreateObject();
@@ -156,14 +160,17 @@ static void send_json_gw(const char *task_json){
         memcpy(json_with_newline, progress_str, json_len);
         json_with_newline[json_len] = '\n';
         json_with_newline[json_len+1]='\0';
-        return tcp_client_send(json_with_newline);
+        esp_err_t ret;
+        ret = tcp_client_send(json_with_newline);
         free(json_with_newline);
+        return ret;
     }
 
+    ESP_LOGI(TAG, "Send ota progress DWLD_DONE : %s", progress_str);
     cJSON_Delete(root);
     free(progress_str);
 
-    ESP_LOGI(TAG, "Send ota progress DWLD_DONE : %s", progress_str);
+    return ESP_OK;
 
 }
 

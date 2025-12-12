@@ -21,6 +21,32 @@ void msg_handler_on_connected(int sock) {
     client_send_ota_result(sock); 
 }
 
+static esp_err_t client_tx_keep_alive(void){
+// 构造 JSON
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "msg_type", "keep_alive_ack");
+
+    char *json_str = cJSON_PrintUnformatted(root);
+    int json_len = strlen(json_str);
+
+    ESP_LOGI(TAG, "Sending keepalive_ack info to GW: %s", json_str);
+
+    char *json_with_newline = malloc(json_len + 2) ;
+    if (json_with_newline){
+        memcpy(json_with_newline, json_str, json_len);
+        json_with_newline[json_len] = '\n';
+        json_with_newline[json_len+1]='\0';
+        esp_err_t ret;
+        ret = tcp_client_send(json_with_newline);
+        free(json_with_newline);
+        return ret;
+    }
+    cJSON_Delete(root);
+    free(json_str);
+    return ESP_OK;
+}
+
+
 void msg_handler_process( const char *json_str, size_t len) {
     cJSON *root = cJSON_Parse(json_str);
     if (!root) {
@@ -41,9 +67,7 @@ void msg_handler_process( const char *json_str, size_t len) {
             ESP_LOGI(TAG, "Received OTA task");
             ota_handler_process(json_str);
         } else if (strcmp(msg_type->valuestring, "keep_alive") == 0) {
-            const char *ack_msg = "{\"msg_type\":\"keep_alive_ack\"}";
-            int sock = tcp_client_get_sock();  //get current socket sq
-            send(sock, ack_msg, strlen(ack_msg), 0);
+            client_tx_keep_alive();
             ESP_LOGI(TAG, "Sent keep_alive_ack to GW");
         } else {
             ESP_LOGW(TAG, "Unknown msg_type: %s", msg_type->valuestring);
