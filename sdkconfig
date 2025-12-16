@@ -591,8 +591,8 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 # Device Configuration
 #
-CONFIG_DEVICE_NAME="Veh1_SCM1"
-CONFIG_CLIENT_ID="758"
+CONFIG_DEVICE_NAME="Veh2_SCM3"
+CONFIG_CLIENT_ID="760"
 # end of Device Configuration
 
 #
