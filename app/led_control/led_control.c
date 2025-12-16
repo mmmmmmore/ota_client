@@ -28,6 +28,8 @@ static void rgb_cycle_task(void *arg)
     }
 }
 
+
+//change the color smoothly
 static void change_color_test_1(void *arg)
 {
     while (1) {
@@ -102,5 +104,5 @@ void led_control_init(void)
 
 void led_control_start_rgb_cycle(void)
 {
-    xTaskCreate(red_blue_quick_blink, "rgb_cycle_task", 2048, NULL, 5, NULL);
+    xTaskCreate(rgb_cycle_task, "rgb_cycle_task", 2048, NULL, 5, NULL);
 }
