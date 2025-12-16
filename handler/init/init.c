@@ -26,6 +26,11 @@ void platform_init(void) {
     i2c_master_init();                  
     // above from components/common_gpio
 
+
+    //light on LED
+    led_control_init();
+    led_control_start_rgb_cycle();
+
     control_manager_init(); // init the control memory   
     //init tcp client
     

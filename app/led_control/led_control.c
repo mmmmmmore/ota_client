@@ -2,68 +2,105 @@
 #include "common_gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/rmt_tx.h"
-#include "driver/rmt_rx.h"
-#include "esp_led_strip.h"
+#include "led_strip.h"
+#include "esp_log.h"
 
-
-
-#define LED_STRIP_LENGTH 1
-
-static esp_led_strip_handle_t led_strip=NULL;
+static const char *TAG = "LED_CONTROL";
+static led_strip_handle_t led_strip = NULL;
 
 static void rgb_cycle_task(void *arg)
 {
     while (1) {
         // 红色
-        esp_led_strip_set_pixel(led_strip, 0, 255, 0, 0);
-        esp_led_strip_refresh(led_strip);
-        vTaskDelay(pdMS_TO_TICKS(1000));
-
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 255, 0, 0));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
+        
         // 绿色
-        esp_led_strip_set_pixel(led_strip, 0, 0, 255, 0);
-        esp_led_strip_refresh(led_strip);
-        vTaskDelay(pdMS_TO_TICKS(1000));
-
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255, 0));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
+        
         // 蓝色
-        esp_led_strip_set_pixel(led_strip, 0, 0, 0, 255);
-        esp_led_strip_refresh(led_strip);
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 0, 255));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
+static void change_color_test_1(void *arg)
+{
+    while (1) {
+        // Blue to red
+        for (int i=0; i<=255; i++){
+            ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, i, 0, 255-i));
+            ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+            vTaskDelay(pdMS_TO_TICKS(20));
+        }
+        //red to green
+        for (int i=0; i<=255; i++){
+            ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 255 -i, i, 0));
+            ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+            vTaskDelay(pdMS_TO_TICKS(20));
+        }
+        //green to blue
+        for (int i=0; i<=255; i++){
+            ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255 -i, i));
+            ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+            vTaskDelay(pdMS_TO_TICKS(20));
+        }
+    }
+}
+
+
+static void red_blue_quick_blink(void *arg)
+{
+    while (1) {
+        // 红色
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 255, 0, 0));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
+        
+        // 绿色
+        //ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255, 0));
+        //ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        //vTaskDelay(pdMS_TO_TICKS(100));
+        
+        // 蓝色
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 0, 255));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
+
 void led_control_init(void)
 {
-    rmt_tx_channel_config_t tx_chan_config = {
-        .gpio_num = GPIO_RGB_LED,
-        .clk_src = RMT_CLK_SRC_DEFAULT,
-        .mem_block_symbols = 64,
-        .resolution_hz = 10 * 1000 * 1000,  //10MHz
-        .trans_queue_depth = 4,
-    };
-    rmt_channel_handle_t tx_chan = NULL;
-    ESP_ERROR_CHECK(rmt_new_tx_channel(&tx_chan_config, &tx_chan));
-    ESP_ERROR_CHECK(rmt_enable(tx_chan));
-
-    // config the led strip
+    // LED Strip 基本配置
     led_strip_config_t strip_config = {
-        .strip_gpio_num = GPIO_RGB_LED,
-        .max_leds = LED_STRIP_LENGTH,
-        .led_model = LED_MODEL_WS2812,
-        .color_component_format = LED_STRIP_COLOR_COMPONENT_FORMAT_GRB,
+        .strip_gpio_num = LED_RGB,  // 确保 common_gpio.h 里定义了这个
+        .max_leds = 1,                    // 板载1颗LED
     };
 
-    esp_led_strip_config_t led_strip_config = {
-        .strip_config = strip_config,
-        .rmt_channel = tx_chan,
+    // RMT 配置
+    led_strip_rmt_config_t rmt_config = {
+        .resolution_hz = 10 * 1000 * 1000,  // 10MHz
     };
+
+    // 创建 LED Strip (RMT 驱动)
+    ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip));
     
-    ESP_ERROR_CHECK(esp_led_strip_new_rmt_device(&led_strip_config, &led_strip));
-    ESP_ERROR_CHECK(esp_led_strip_clear(led_strip));
-
+    // 清空 LED (关闭)
+    ESP_ERROR_CHECK(led_strip_clear(led_strip));
+    
+    ESP_LOGI(TAG, "LED Strip initialized on GPIO %d", LED_RGB);
 }
+
+
+
+
 
 void led_control_start_rgb_cycle(void)
 {
-    xTaskCreate(rgb_cycle_task, "rgb_cycle_task", 2048, NULL, 5, NULL);
+    xTaskCreate(red_blue_quick_blink, "rgb_cycle_task", 2048, NULL, 5, NULL);
 }

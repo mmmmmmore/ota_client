@@ -4,7 +4,7 @@ idf_component_register(
     INCLUDE_DIRS 
         "."
     REQUIRES 
-        esp_wifi esp_http_server nvs_flash driver esp_driver_led_strip
+        esp_wifi esp_http_server nvs_flash driver led_strip
         common_gpio
         motor_handler init ota_handler
         control_mgmt json
