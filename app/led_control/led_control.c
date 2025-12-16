@@ -102,5 +102,5 @@ void led_control_init(void)
 
 void led_control_start_rgb_cycle(void)
 {
-    xTaskCreate(red_blue_quick_blink, "rgb_cycle_task", 2048, NULL, 5, NULL);
+    xTaskCreate(change_color_test_1, "rgb_cycle_task", 2048, NULL, 5, NULL);
 }

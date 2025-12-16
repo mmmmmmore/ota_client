@@ -584,12 +584,22 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/wifi_sta/cmake_install.cmake")
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/motor_handler/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/ota_handler/cmake_install.cmake")
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/cJSON/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/client_register/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/msg_handler/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
@@ -604,17 +614,32 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/wifi_sta/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/ota_handler/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/espressif__led_strip/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/led_control/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/motor_control/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/init/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/webserver/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/motor_handler/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
@@ -630,21 +655,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
   include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/main/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/led_control/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/motor_control/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/esp-idf/tmp/cmake_install.cmake")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT

@@ -1,0 +1,2 @@
+source /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/bootloader/gdbinit/symbols
+source /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/bootloader/gdbinit/connect

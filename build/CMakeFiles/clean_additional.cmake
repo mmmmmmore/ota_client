@@ -19,7 +19,7 @@ if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "")
   "ota_client.bin"
   "ota_client.map"
   "project_elf_src_esp32s3.c"
-  "server_cert.pem.S"
+  "rootCA.pem.S"
   "x509_crt_bundle.S"
   )
 endif()

@@ -6734,6 +6734,34 @@
     {
         "children": [
             {
+                "children": [],
+                "depends_on": null,
+                "help": "device name for GW identify",
+                "id": "DEVICE_NAME",
+                "name": "DEVICE_NAME",
+                "range": null,
+                "title": "Device name",
+                "type": "string"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": "Each ECU ID for GW identification",
+                "id": "CLIENT_ID",
+                "name": "CLIENT_ID",
+                "range": null,
+                "title": "CLient ID",
+                "type": "string"
+            }
+        ],
+        "depends_on": null,
+        "id": "device-configuration",
+        "title": "Device Configuration",
+        "type": "menu"
+    },
+    {
+        "children": [
+            {
                 "children": [
                     {
                         "children": [],
