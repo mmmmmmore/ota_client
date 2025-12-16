@@ -79,6 +79,10 @@
 #define LEDC_CHANNEL_MOTOR2_B  LEDC_CHANNEL_3
 
 
+//板载LED的pin定义和驱动
+#define LED_RGB 48
+
+
 
 void common_gpio_init(void);
 void ledc_init(void);
