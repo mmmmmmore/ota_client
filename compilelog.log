@@ -1,26 +1,28 @@
 
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c: In function 'client_send_ota_result':
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:138:1: error: control reaches end of non-void function [-Werror=return-type]
-  138 | }
-      | ^
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c: In function 'send_json_gw':
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:168:1: error: control reaches end of non-void function [-Werror=return-type]
-  168 | }
-      | ^
-In file included from /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:3:
-/Users/maochun/esp32prj/esp-idf/components/log/include/esp_log.h:224:65: warning: pointer 'progress_str' used after 'free' [-Wuse-after-free]
-  224 |         else                                                  { esp_log(ESP_LOG_CONFIG_INIT(ESP_LOG_INFO),    tag, LOG_FORMAT(I, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
-      |                                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/Users/maochun/esp32prj/esp-idf/components/log/include/esp_log.h:165:94: note: in expansion of macro 'ESP_LOG_LEVEL'
-  165 | #define ESP_LOG_LEVEL_LOCAL(configs, tag, format, ...) do { if (_ESP_LOG_ENABLED(configs)) { ESP_LOG_LEVEL(configs, tag, format, ##__VA_ARGS__); } } while(0)
-      |                                                                                              ^~~~~~~~~~~~~
-/Users/maochun/esp32prj/esp-idf/components/log/include/esp_log.h:127:41: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
-  127 | #define ESP_LOGI(tag, format, ...) do { ESP_LOG_LEVEL_LOCAL(ESP_LOG_INFO, tag, format, ##__VA_ARGS__); } while(0)
-      |                                         ^~~~~~~~~~~~~~~~~~~
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:166:5: note: in expansion of macro 'ESP_LOGI'
-  166 |     ESP_LOGI(TAG, "Send ota progress DWLD_DONE : %s", progress_str);
-      |     ^~~~~~~~
-/Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/handler/ota_handler/ota_handler.c:164:5: note: call to 'free' here
-  164 |     free(progress_str);
-      |     ^~~~~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
+HINT: The component 'esp_driver_led_strip' could not be found. This could be because: component name was misspelled, the component was not added to the build, the component has been moved to the IDF component manager, the component has been removed and refactored into some other component or the component may not be supported by the selected target.
+Please look out for component in 'https://components.espressif.com' and add using 'idf.py add-dependency' command.
+Refer to the migration guide for more details about moved components.
+Refer to the build-system guide for more details about how components are found and included in the build.
+ninja failed with exit code 1, output of the command is in the /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/log/idf_py_stderr_output_85432 and /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/log/idf_py_stdout_output_85432
+maochun@MMMBP ota_client % idf.py list-components | grep led_strip
+CMake Error at /Users/maochun/esp32prj/esp-idf/tools/cmake/build.cmake:332 (message):
+  Failed to resolve component 'esp_driver_led_strip' required by component
+  'led_control': unknown name.
+Call Stack (most recent call first):
+  /Users/maochun/esp32prj/esp-idf/tools/cmake/build.cmake:375 (__build_resolve_and_add_req)
+  /Users/maochun/esp32prj/esp-idf/tools/cmake/build.cmake:376 (__build_expand_requirements)
+  /Users/maochun/esp32prj/esp-idf/tools/cmake/build.cmake:376 (__build_expand_requirements)
+  /Users/maochun/esp32prj/esp-idf/tools/cmake/build.cmake:705 (__build_expand_requirements)
+  /Users/maochun/esp32prj/esp-idf/tools/cmake/project.cmake:740 (idf_build_process)
+  CMakeLists.txt:28 (project)
+
+
+ninja: error: rebuilding 'build.ninja': subcommand failed
+HINT: The component 'esp_driver_led_strip' could not be found. This could be because: component name was misspelled, the component was not added to the build, the component has been moved to the IDF component manager, the component has been removed and refactored into some other component or the component may not be supported by the selected target.
+Please look out for component in 'https://components.espressif.com' and add using 'idf.py add-dependency' command.
+Refer to the migration guide for more details about moved components.
+Refer to the build-system guide for more details about how components are found and included in the build.
+ninja failed with exit code 1, output of the command is in the /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/log/idf_py_stderr_output_85734 and /Users/maochun/esp32prj/Project_CAM/branch/ota_Client/ota_client/build/log/idf_py_stdout_output_85734
+maochun@MMMBP ota_client % idf.py --version
+ESP-IDF v6.0-dev-2039-g2044fba6e7
+maochun@MMMBP ota_client % 

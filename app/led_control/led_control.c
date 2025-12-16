@@ -2,56 +2,65 @@
 #include "common_gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/rmt.h"
-#include "led_strip.h"
+#include "driver/rmt_tx.h"
+#include "driver/rmt_rx.h"
+#include "esp_led_strip.h"
 
-#define RMT_TX_CHANNEL RMT_CHANNEL_0
+
+
 #define LED_STRIP_LENGTH 1
 
-static led_strip_t *strip = NULL;
+static esp_led_strip_handle_t led_strip=NULL;
 
 static void rgb_cycle_task(void *arg)
 {
     while (1) {
         // 红色
-        strip->set_pixel(strip, 0, 255, 0, 0);
-        strip->refresh(strip, 100);
+        esp_led_strip_set_pixel(led_strip, 0, 255, 0, 0);
+        esp_led_strip_refresh(led_strip);
         vTaskDelay(pdMS_TO_TICKS(1000));
 
         // 绿色
-        strip->set_pixel(strip, 0, 0, 255, 0);
-        strip->refresh(strip, 100);
+        esp_led_strip_set_pixel(led_strip, 0, 0, 255, 0);
+        esp_led_strip_refresh(led_strip);
         vTaskDelay(pdMS_TO_TICKS(1000));
 
         // 蓝色
-        strip->set_pixel(strip, 0, 0, 0, 255);
-        strip->refresh(strip, 100);
+        esp_led_strip_set_pixel(led_strip, 0, 0, 0, 255);
+        esp_led_strip_refresh(led_strip);
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
 void led_control_init(void)
 {
-    rmt_config_t config = {
-        .rmt_mode = RMT_MODE_TX,
-        .channel = RMT_TX_CHANNEL,
+    rmt_tx_channel_config_t tx_chan_config = {
         .gpio_num = GPIO_RGB_LED,
-        .clk_div = 2,
-        .mem_block_num = 1,
-        .tx_config = {
-            .loop_en = false,
-            .carrier_en = false,
-            .idle_output_en = true,
-            .idle_level = RMT_IDLE_LEVEL_LOW,
-        }
+        .clk_src = RMT_CLK_SRC_DEFAULT,
+        .mem_block_symbols = 64,
+        .resolution_hz = 10 * 1000 * 1000,  //10MHz
+        .trans_queue_depth = 4,
     };
-    rmt_config(&config);
-    rmt_driver_install(config.channel, 0, 0);
+    rmt_channel_handle_t tx_chan = NULL;
+    ESP_ERROR_CHECK(rmt_new_tx_channel(&tx_chan_config, &tx_chan));
+    ESP_ERROR_CHECK(rmt_enable(tx_chan));
 
-    strip = led_strip_new_rmt_ws2812(&config);
-    if (strip) {
-        strip->clear(strip, 100);
-    }
+    // config the led strip
+    led_strip_config_t strip_config = {
+        .strip_gpio_num = GPIO_RGB_LED,
+        .max_leds = LED_STRIP_LENGTH,
+        .led_model = LED_MODEL_WS2812,
+        .color_component_format = LED_STRIP_COLOR_COMPONENT_FORMAT_GRB,
+    };
+
+    esp_led_strip_config_t led_strip_config = {
+        .strip_config = strip_config,
+        .rmt_channel = tx_chan,
+    };
+    
+    ESP_ERROR_CHECK(esp_led_strip_new_rmt_device(&led_strip_config, &led_strip));
+    ESP_ERROR_CHECK(esp_led_strip_clear(led_strip));
+
 }
 
 void led_control_start_rgb_cycle(void)
