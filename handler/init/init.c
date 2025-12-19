@@ -15,6 +15,7 @@
 #include "lwip/netdb.h"
 #include <string.h>
 #include <unistd.h>
+#include "sdkconfig.h"
 
 
 void platform_init(void) {
@@ -55,9 +56,8 @@ void platform_init(void) {
     //6. register client init
     client_register_init();
 
-
-
-
+    ESP_LOGI("Init_Finished", "Device_Name is : %s", CONFIG_DEVICE_NAME);
+    ESP_LOGI("Init_Finished", "Client_ID is : %s", CONFIG_CLIENT_ID);
 
 }
 

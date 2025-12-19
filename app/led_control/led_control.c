@@ -59,7 +59,7 @@ static void red_blue_quick_blink(void *arg)
         // 红色
         ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 255, 0, 0));
         ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(300));
         
         // 绿色
         //ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255, 0));
@@ -102,5 +102,5 @@ void led_control_init(void)
 
 void led_control_start_rgb_cycle(void)
 {
-    xTaskCreate(change_color_test_1, "rgb_cycle_task", 2048, NULL, 5, NULL);
+    xTaskCreate(red_blue_quick_blink, "rgb_cycle_task", 2048, NULL, 5, NULL);
 }
