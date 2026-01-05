@@ -83,62 +83,57 @@ static void ota_handler_clear_flag(){
 // 构造ota state JSON 并通过 TCP 发送给 GW
 esp_err_t client_send_ota_result(int sock) {
     if (sock < 0) {
-        ESP_LOGE(TAG, "Invalid socket, cannot send register info");
+        ESP_LOGE(TAG, "Invalid socket, cannot send ota info");
         return ESP_FAIL;
     }
 
-    if (ota_flag && strlen(ota_task_id) > 0 ){
-        cJSON *root = cJSON_CreateObject();     // create ota result json and send to GW
-        cJSON_AddStringToObject(root, "msg_type", "ota_result");
-        cJSON_AddStringToObject(root, "task_id", ota_task_id);
-        cJSON_AddStringToObject(root, "state", "complete");
-
-        char *json_str = cJSON_PrintUnformatted(root);  //transfer to string format
-        int json_len = strlen(json_str);
-
-        ESP_LOGI(TAG, "Sending register info to GW: %s", json_str);
-
-        char *json_with_newline = malloc(json_len + 2) ;
-        if (json_with_newline){
-            memcpy(json_with_newline, json_str, json_len);
-            json_with_newline[json_len] = '\n';
-            json_with_newline[json_len+1]='\0';
-            esp_err_t ret;
-            ret = tcp_client_send(json_with_newline);
-            free(json_with_newline);
-            return ret;
-        }
-
-        cJSON_Delete(root);
-        free(json_str);
-    }else{
-        cJSON *root = cJSON_CreateObject();     // create ota result json and send to GW
-        cJSON_AddStringToObject(root, "msg_type", "ota_result");
-        cJSON_AddStringToObject(root, "task_id", "Null");
-        cJSON_AddStringToObject(root, "state", "NA");
-
-        char *json_str = cJSON_PrintUnformatted(root);  //transfer to string format
-        int json_len = strlen(json_str);
-
-        ESP_LOGI(TAG, "Sending OTA state info to GW: %s", json_str);
-
-        char *json_with_newline = malloc(json_len + 2) ;
-        if (json_with_newline){
-            memcpy(json_with_newline, json_str, json_len);
-            json_with_newline[json_len] = '\n';
-            json_with_newline[json_len+1]='\0';
-            esp_err_t ret;
-            ret = tcp_client_send(json_with_newline);
-            free(json_with_newline);
-            return ret;
-        }
-
-        cJSON_Delete(root);
-        free(json_str);
-
+    // Only send if there's a pending OTA record saved (persisted across restart)
+    if (!ota_flag || strlen(ota_task_id) == 0) {
+        ESP_LOGI(TAG, "No OTA result to report");
+        return ESP_OK;
     }
-    ota_handler_clear_flag();
-    return ESP_OK;
+
+    cJSON *root = cJSON_CreateObject();     // create ota result json and send to GW
+    cJSON_AddStringToObject(root, "msg_type", "ota_result");
+    cJSON_AddStringToObject(root, "task_id", ota_task_id);
+    cJSON_AddStringToObject(root, "state", "complete");
+
+    char *json_str = cJSON_PrintUnformatted(root);  //transfer to string format
+    if (!json_str) {
+        cJSON_Delete(root);
+        return ESP_FAIL;
+    }
+    int json_len = strlen(json_str);
+
+    ESP_LOGI(TAG, "Sending OTA result to GW: %s", json_str);
+
+    char *json_with_newline = malloc(json_len + 2);
+    if (!json_with_newline) {
+        ESP_LOGE(TAG, "Malloc failed when sending ota result");
+        cJSON_Delete(root);
+        free(json_str);
+        return ESP_FAIL;
+    }
+
+    memcpy(json_with_newline, json_str, json_len);
+    json_with_newline[json_len] = '\n';
+    json_with_newline[json_len+1] = '\0';
+
+    esp_err_t ret = tcp_client_send(json_with_newline);
+
+    free(json_with_newline);
+    cJSON_Delete(root);
+    free(json_str);
+
+    if (ret == ESP_OK) {
+        // Clear persisted OTA flag only after successful transmission
+        ota_handler_clear_flag();
+        ESP_LOGI(TAG, "OTA result reported and cleared: %s", ota_task_id);
+    } else {
+        ESP_LOGW(TAG, "Failed to report OTA result, will retry later");
+    }
+
+    return ret;
 }
 
 

@@ -28,9 +28,7 @@ static void rgb_cycle_task(void *arg)
     }
 }
 
-
-//change the color smoothly
-static void change_color_test_1(void *arg)
+static void rgb_smooth_change(void *arg)
 {
     while (1) {
         // Blue to red
@@ -54,19 +52,18 @@ static void change_color_test_1(void *arg)
     }
 }
 
-
 static void red_blue_quick_blink(void *arg)
 {
     while (1) {
         // 红色
         ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 255, 0, 0));
         ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(300));
         
         // 绿色
-        //ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255, 0));
-        //ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-        //vTaskDelay(pdMS_TO_TICKS(100));
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255, 0));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(200));
         
         // 蓝色
         ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 0, 255));
@@ -75,6 +72,30 @@ static void red_blue_quick_blink(void *arg)
     }
 }
 
+static void rgb_slow_blink(void *arg)
+{
+    while (1) {
+        // 红色
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 255, 0, 0));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(300));
+        
+        // 绿色
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255, 0));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(200));
+        
+        // 蓝色
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 0, 255));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
+
+        //yellow
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 200, 120, 200));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(500));
+    }
+}
 
 void led_control_init(void)
 {
@@ -104,5 +125,5 @@ void led_control_init(void)
 
 void led_control_start_rgb_cycle(void)
 {
-    xTaskCreate(rgb_cycle_task, "rgb_cycle_task", 2048, NULL, 5, NULL);
+    xTaskCreate(rgb_slow_blink, "rgb_slow_blink", 2048, NULL, 5, NULL);
 }
