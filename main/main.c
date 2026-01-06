@@ -29,13 +29,10 @@ void app_main(void) {
 
     printf("ESP32S3 Boot Success...\n");
 
-    // 3. WiFi STA（不再重复创建事件循环/网络栈）
-    ESP_ERROR_CHECK(wifi_sta_init());
+    // 3. Start IGN management (this will check initial pin and start/stop platform)
+    ESP_ERROR_CHECK(ign_mgmt());
 
-    // 4. 其他平台初始化
-    platform_init();
-
-    printf("系统初始化完成，等待客户端连接...\n");
+    printf("IGN management started; device will initialize when IGN is ON\n");
 }
 
 

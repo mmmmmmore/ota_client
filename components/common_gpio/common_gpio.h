@@ -59,6 +59,10 @@
 #define GPIO_LED_STATUS      18     // 状态指示灯
 //#define GPIO_WEBSERVER_CTRL  44     // WebServer 控制信号（注意 GPIO0 启动模式影响）
 
+// IGN pin (input). Connect to 3V3 via switch to indicate IGN ON. Change if conflicts with other peripheral pins.
+#define GPIO_IGN_PIN         21     // Default IGN input pin
+
+
 // ======================= I2C 参数定义 =======================
 #define I2C_MASTER_NUM       I2C_NUM_0          // 使用 I2C 控制器编号
 #define I2C_MASTER_FREQ_HZ   100000             // I2C 通信频率（100kHz）

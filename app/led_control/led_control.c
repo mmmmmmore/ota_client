@@ -125,7 +125,26 @@ void led_control_init(void)
 
 
 
+static TaskHandle_t s_rgb_task = NULL;
+
 void led_control_start_rgb_cycle(void)
 {
-    xTaskCreate(rgb_cycle_task, "rgb_cycle_task", 2048, NULL, 5, NULL);
+    if (s_rgb_task) {
+        ESP_LOGI(TAG, "RGB cycle already running");
+        return;
+    }
+    xTaskCreate(rgb_cycle_task, "rgb_cycle_task", 2048, NULL, 5, &s_rgb_task);
+}
+
+void led_control_stop(void)
+{
+    if (s_rgb_task) {
+        vTaskDelete(s_rgb_task);
+        s_rgb_task = NULL;
+    }
+
+    if (led_strip) {
+        ESP_ERROR_CHECK(led_strip_clear(led_strip));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+    }
 }
