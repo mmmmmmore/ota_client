@@ -8,6 +8,7 @@ set(EXTRA_COMPONENT_DIRS
         app/motor_control
         app/client_register
         components/common_gpio
+        components/build_info
         protocol/wifi_sta
         protocol/control_mgmt
         protocol/tcp_client

@@ -5,6 +5,7 @@
 #include "sdkconfig.h"
 #include "esp_wifi.h"
 #include "esp_netif.h"
+#include "build_info.h"
 
 
 
@@ -49,7 +50,7 @@ esp_err_t client_register_send_register(int sock) {
     cJSON_AddStringToObject(root, "device_name", CONFIG_DEVICE_NAME);
     cJSON_AddStringToObject(root, "client_id", CONFIG_CLIENT_ID);
     cJSON_AddStringToObject(root, "mac", mac_str);
-    cJSON_AddStringToObject(root, "version", OTA_VER);
+    cJSON_AddStringToObject(root, "version", build_ota_ver);
     cJSON_AddStringToObject(root, "ip", ip_str);
     cJSON_AddStringToObject(root, "connection", "Online"); // Empty capabilities for now
 

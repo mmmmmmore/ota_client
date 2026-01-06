@@ -1,0 +1,7 @@
+#ifndef BUILD_INFO_VERSION_H
+#define BUILD_INFO_VERSION_H
+
+// BUILD_OTA_VER is configured at CMake configure time from the OTA_VER variable
+#define BUILD_OTA_VER "@OTA_VER@"
+
+#endif // BUILD_INFO_VERSION_H
