@@ -3,7 +3,6 @@
 #include "control_mgmt.h"
 #include "common_gpio.h"
 #include "wifi_sta.h"
-#include "control_mgmt.h"
 #include "ota_handler.h"
 #include "msg_handler.h"
 #include "client_register.h"
@@ -17,11 +16,6 @@
 #include <unistd.h>
 #include "sdkconfig.h"
 #include "esp_err.h"
-
-
-
-
-
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
