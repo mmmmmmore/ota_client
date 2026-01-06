@@ -22,6 +22,9 @@ esp_err_t tcp_client_start(const char *gw_ip, uint16_t gw_port);
 // 发送数据
 esp_err_t tcp_client_send(const char *json_str);
 
+// 停止 TCP 客户端并关闭 socket
+esp_err_t tcp_client_stop(void);
+
 // 获取当前 socket
 int tcp_client_get_sock(void);
 

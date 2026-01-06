@@ -72,6 +72,18 @@ int tcp_client_get_sock(void) {
     return sock;
 }
 
+esp_err_t tcp_client_stop(void) {
+    if (sock >= 0) {
+        ESP_LOGI(TAG, "Stopping TCP client and closing socket");
+        close(sock);
+        sock = -1;
+    }
+    // clear saved GW info so task won't auto-reconnect
+    gw_ip_str[0] = '\0';
+    gw_port_num = 0;
+    return ESP_OK;
+}
+
 void tcp_client_task(void *pvParameters) {
     char rx_buffer[512];
     while (1) {

@@ -35,6 +35,7 @@
 
 */
 
+#define GPIO_IGN_PIN        21  // Ignition detection pin
 // ======================= TB6612FNG 电机驱动模块 =======================
 // TB6612FNG #1
 #define GPIO_MOTOR1_AIN1     4

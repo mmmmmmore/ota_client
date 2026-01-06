@@ -7,6 +7,9 @@
 // 初始化并连接到唯一的 OTA-GW 网络
 esp_err_t wifi_sta_init(void);
 
+// 停止并断开 Wi-Fi（用于 IGN OFF）
+esp_err_t wifi_sta_deinit(void);
+
 // 获取当前连接状态
 bool wifi_sta_is_connected(void);
 
