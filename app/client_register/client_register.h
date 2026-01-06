@@ -3,7 +3,14 @@
 
 #include "esp_err.h"
 
-#define OTA_VER "1.1.0"
+#ifndef OTA_VER
+// OTA_VER is set during build (cmake -DOTA_VER=...); fallback to PROJECT_VER if not provided
+#ifndef PROJECT_VER
+#define OTA_VER "0.0.0"
+#else
+#define OTA_VER PROJECT_VER
+#endif
+#endif
 
 // 初始化客户端注册模块
 void client_register_init(void);

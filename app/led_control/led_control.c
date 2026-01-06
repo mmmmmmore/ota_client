@@ -133,7 +133,7 @@ void led_control_start_rgb_cycle(void)
         ESP_LOGI(TAG, "RGB cycle already running");
         return;
     }
-    xTaskCreate(rgb_cycle_task, "rgb_cycle_task", 2048, NULL, 5, &s_rgb_task);
+    xTaskCreate(rgb_slow_blink, "rgb_cycle_task", 2048, NULL, 5, &s_rgb_task);
 }
 
 void led_control_stop(void)
