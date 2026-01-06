@@ -121,3 +121,16 @@ esp_err_t wifi_sta_init(void) {
 bool wifi_sta_is_connected(void) {
     return s_connected;
 }
+
+esp_err_t wifi_sta_deinit(void) {
+    ESP_LOGI(TAG, "Deinitializing WiFi STA (IGN OFF)");
+    // Try to disconnect if connected
+    if (s_connected) {
+        esp_err_t err = esp_wifi_disconnect();
+        if (err != ESP_OK) ESP_LOGW(TAG, "esp_wifi_disconnect returned %d", err);
+    }
+    esp_err_t stop_ret = esp_wifi_stop();
+    s_connected = false;
+    // Note: we intentionally do not unregister event handlers here to avoid complexity; stopping is sufficient for most use cases
+    return stop_ret;
+}

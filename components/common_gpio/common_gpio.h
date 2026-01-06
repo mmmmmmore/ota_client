@@ -15,7 +15,7 @@
 #define GPIO_SCL             19     // SCCB 时钟线
 #define GPIO_SDA             20    // SCCB 数据线
 
-
+#define GPIO_IGN_PIN         21    // 摄像头模块使能引脚
 /*
 #define GPIO_D0              6     // 图像数据位 0
 #define GPIO_D1              7     // 图像数据位 1

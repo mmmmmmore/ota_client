@@ -3,5 +3,5 @@ idf_component_register(
     INCLUDE_DIRS "."
     REQUIRES 
         esp_wifi wifi_sta esp_netif log cJSON
-        tcp_client ota_handler 
+        tcp_client ota_handler build_info
 )

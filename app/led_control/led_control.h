@@ -10,6 +10,9 @@
 void led_control_init(void);
 void led_control_start_rgb_cycle(void);
 
+// Stop the RGB cycle and clear LED
+void led_control_stop(void);
+
 
 
 

@@ -5,6 +5,7 @@
 #include "sdkconfig.h"
 #include "esp_wifi.h"
 #include "esp_netif.h"
+#include "build_info.h"
 
 
 
@@ -49,8 +50,9 @@ esp_err_t client_register_send_register(int sock) {
     cJSON_AddStringToObject(root, "device_name", CONFIG_DEVICE_NAME);
     cJSON_AddStringToObject(root, "client_id", CONFIG_CLIENT_ID);
     cJSON_AddStringToObject(root, "mac", mac_str);
-    cJSON_AddStringToObject(root, "version", OTA_VER);
+    cJSON_AddStringToObject(root, "version", build_ota_ver);
     cJSON_AddStringToObject(root, "ip", ip_str);
+    cJSON_AddStringToObject(root, "connection", "Online"); // Empty capabilities for now
 
     char *json_str = cJSON_PrintUnformatted(root);
     int json_len = strlen(json_str);
@@ -65,6 +67,42 @@ esp_err_t client_register_send_register(int sock) {
         esp_err_t ret;
         ret = tcp_client_send(json_with_newline);
         free(json_with_newline);
+        cJSON_Delete(root);
+        free(json_str);
+        return ret;
+    }
+
+    cJSON_Delete(root);
+    free(json_str);
+    return ESP_OK;
+}
+
+// 发送下线消息（尽量在断电或 IGN_OFF 时先发送该消息）
+esp_err_t client_register_send_offline(int sock) {
+    // 构造 JSON
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "msg_type", "register");
+    cJSON_AddStringToObject(root, "client_id", CONFIG_CLIENT_ID);
+    cJSON_AddStringToObject(root, "connection", "Offline");
+
+    char *json_str = cJSON_PrintUnformatted(root);
+    if (!json_str) {
+        cJSON_Delete(root);
+        return ESP_FAIL;
+    }
+
+    int json_len = strlen(json_str);
+    ESP_LOGI(TAG, "Sending offline info to GW: %s", json_str);
+
+    char *json_with_newline = malloc(json_len + 2);
+    if (json_with_newline) {
+        memcpy(json_with_newline, json_str, json_len);
+        json_with_newline[json_len] = '\n';
+        json_with_newline[json_len+1] = '\0';
+        esp_err_t ret = tcp_client_send(json_with_newline);
+        free(json_with_newline);
+        cJSON_Delete(root);
+        free(json_str);
         return ret;
     }
 
