@@ -103,7 +103,7 @@ void led_control_init(void)
 {
     // LED Strip 基本配置
     led_strip_config_t strip_config = {
-        .strip_gpio_num = LED_RGB,  // 确保 common_gpio.h 里定义了这个
+        .strip_gpio_num = GPIO_LED_WS2812,
         .max_leds = 1,                    // 板载1颗LED
     };
 
@@ -118,10 +118,8 @@ void led_control_init(void)
     // 清空 LED (关闭)
     ESP_ERROR_CHECK(led_strip_clear(led_strip));
     
-    ESP_LOGI(TAG, "LED Strip initialized on GPIO %d", LED_RGB);
+    ESP_LOGI(TAG, "LED Strip initialized on GPIO %d", GPIO_LED_WS2812);
 }
-
-
 
 
 
@@ -144,7 +142,20 @@ void led_control_stop(void)
     }
 
     if (led_strip) {
-        ESP_ERROR_CHECK(led_strip_clear(led_strip));
-        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        esp_err_t err = led_strip_clear(led_strip);
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to clear LED strip: %s", esp_err_to_name(err));
+        } else {
+            err = led_strip_refresh(led_strip);
+            if (err != ESP_OK) {
+                ESP_LOGW(TAG, "Failed to refresh LED strip: %s", esp_err_to_name(err));
+            }
+        }
+
+        err = led_strip_del(led_strip);
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to delete LED strip: %s", esp_err_to_name(err));
+        }
+        led_strip = NULL;
     }
 }

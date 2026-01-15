@@ -34,8 +34,7 @@ esp_err_t platform_init(void) {
     
     //initiated the GPIOs and setup default config
     common_gpio_init();               // 初始化所有 GPIO from components/common_gpio
-    ledc_init();
-    i2c_master_init();                  
+    //i2c_master_init();                  
     // above from components/common_gpio
 
 
@@ -58,7 +57,7 @@ esp_err_t platform_init(void) {
  
     
     // 5. 初始化电机控制
-    //motor_control_init();
+    motor_control_init();
     //led_control_init();
     
     ota_handler_init();
@@ -97,7 +96,10 @@ esp_err_t platform_deinit(void) {
     // stop led activity (clear LED)
     led_control_stop();
 
-    // Note: other subsystems (ota, msg_handler, motor_control) do not have a defined deinit in current codebase
+    // stop servo sweep task
+    motor_control_deinit();
+
+    // Note: other subsystems (ota, msg_handler) do not have a defined deinit in current codebase
 
     s_initialized = false;
     return ESP_OK;
