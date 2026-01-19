@@ -17,14 +17,37 @@ static void rgb_cycle_task(void *arg)
         vTaskDelay(pdMS_TO_TICKS(100));
         
         // 绿色
-        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255, 0));
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 1, 0, 255, 0));
         ESP_ERROR_CHECK(led_strip_refresh(led_strip));
         vTaskDelay(pdMS_TO_TICKS(100));
         
         // 蓝色
-        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 0, 255));
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 2, 0, 0, 255));
         ESP_ERROR_CHECK(led_strip_refresh(led_strip));
         vTaskDelay(pdMS_TO_TICKS(100));
+        // Yellow
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 3, 255, 255, 0));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
+        // Purple
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 4, 128, 0, 128));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
+        // Cyan
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 5, 0, 255, 255));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(100));
+        // White
+        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 6, 100, 100, 100));
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        // Turn off all LEDs
+        for (int i = 0; i < 7; i++) {
+            ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, i, 0, 0, 0));
+        }
+        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        vTaskDelay(pdMS_TO_TICKS(500) );
+
     }
 }
 
@@ -104,7 +127,7 @@ void led_control_init(void)
     // LED Strip 基本配置
     led_strip_config_t strip_config = {
         .strip_gpio_num = GPIO_LED_WS2812,
-        .max_leds = 1,                    // 板载1颗LED
+        .max_leds = 10,                    // 板载1颗LED
     };
 
     // RMT 配置
