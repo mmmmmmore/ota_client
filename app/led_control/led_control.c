@@ -2,150 +2,106 @@
 #include "common_gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "led_strip.h"
 #include "esp_log.h"
+#include "esp_err.h"
+#include "led_strip.h"
 #include <stddef.h>
-#include <stdint.h>
 
-static const char *TAG = "LED_CONTROL";
-static led_strip_handle_t led_strip = NULL;
+#define LED_COUNT            3
+#define LED_HOLD_TIME_MS     2000
+#define LED_OFF_TIME_MS       200
 
 typedef struct {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-} rgb_color_t;
+    const char *name;
+    gpio_num_t gpio;
+    led_strip_handle_t handle;
+} ws2812_led_t;
 
-static void fade_between(const rgb_color_t *from, const rgb_color_t *to, uint16_t steps, uint16_t step_delay_ms)
+static ws2812_led_t s_leds[LED_COUNT] = {
+    {"LED1", GPIO_LED_WS2812,  NULL},
+    {"LED2", GPIO_LED_WS2812_2, NULL},
+    {"LED3", GPIO_LED_WS2812_3, NULL},
+};
+
+static const uint8_t s_led_colors[LED_COUNT][3] = {
+    {255,   0,   0}, // LED1 -> Red
+    {  0, 255,   0}, // LED2 -> Green
+    {  0,   0, 255}, // LED3 -> Blue
+};
+
+static const char *TAG = "LED_CONTROL";
+static TaskHandle_t s_rgb_task = NULL;
+
+static esp_err_t set_led_color(ws2812_led_t *led, uint8_t r, uint8_t g, uint8_t b)
 {
-    for (uint16_t step = 0; step <= steps; ++step) {
-        uint8_t r = from->r + ((int16_t)to->r - (int16_t)from->r) * step / steps;
-        uint8_t g = from->g + ((int16_t)to->g - (int16_t)from->g) * step / steps;
-        uint8_t b = from->b + ((int16_t)to->b - (int16_t)from->b) * step / steps;
-        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, r, g, b));
-        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-        vTaskDelay(pdMS_TO_TICKS(step_delay_ms));
+    if (!led->handle) {
+        return ESP_ERR_INVALID_STATE;
     }
+
+    esp_err_t err = led_strip_set_pixel(led->handle, 0, r, g, b);
+    if (err != ESP_OK) {
+        return err;
+    }
+    return led_strip_refresh(led->handle);
 }
 
-static void rgb_cycle_task(void *arg)
+static void sequence_task(void *arg)
 {
-    while (1) {
-        // 红色
-        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 255, 0, 0));
-        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-        vTaskDelay(pdMS_TO_TICKS(100));
-        
-        // 绿色
-        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255, 0));
-        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-        vTaskDelay(pdMS_TO_TICKS(100));
-        
-        // 蓝色
-        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 0, 255));
-        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-        vTaskDelay(pdMS_TO_TICKS(100));
-    }
-}
-
-static void rgb_smooth_change(void *arg)
-{
-    while (1) {
-        // Blue to red
-        for (int i=0; i<=255; i++){
-            ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, i, 0, 255-i));
-            ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-            vTaskDelay(pdMS_TO_TICKS(20));
-        }
-        //red to green
-        for (int i=0; i<=255; i++){
-            ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 255 -i, i, 0));
-            ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-            vTaskDelay(pdMS_TO_TICKS(20));
-        }
-        //green to blue
-        for (int i=0; i<=255; i++){
-            ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 0, 255 -i, i));
-            ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-            vTaskDelay(pdMS_TO_TICKS(20));
-        }
-    }
-}
-
-
-static void red_blue_quick_blink(void *arg)
-{
-    const rgb_color_t palette[] = {
-        {210, 120, 150}, // soft pink
-        {220, 150, 80},  // mellow orange
-        {140, 90, 60},   // warm brown
-        {110, 120, 130}, // soft grey
-    };
-    const uint16_t steps = 64;        // more steps = smoother fade
-    const uint16_t step_delay_ms = 35; // smaller delay = faster fade
+    const TickType_t hold_ticks = pdMS_TO_TICKS(LED_HOLD_TIME_MS);
+    const TickType_t off_ticks = pdMS_TO_TICKS(LED_OFF_TIME_MS);
 
     while (1) {
-        for (size_t i = 0; i < sizeof(palette) / sizeof(palette[0]); ++i) {
-            const rgb_color_t *from = &palette[i];
-            const rgb_color_t *to = &palette[(i + 1) % (sizeof(palette) / sizeof(palette[0]))];
-            fade_between(from, to, steps, step_delay_ms);
-        }
-    }
-}
+        for (size_t i = 0; i < LED_COUNT; ++i) {
+            if (!s_leds[i].handle) {
+                continue;
+            }
 
+            esp_err_t err = set_led_color(&s_leds[i],
+                                          s_led_colors[i][0],
+                                          s_led_colors[i][1],
+                                          s_led_colors[i][2]);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Failed to light %s: %s", s_leds[i].name, esp_err_to_name(err));
+            } else {
+                vTaskDelay(hold_ticks);
 
-static void rgb_slow_blink(void *arg)
-{
-    const rgb_color_t palette[] = {
-        {255, 0, 0},     // red
-        {255, 120, 0},   // orange
-        {255, 200, 0},   // yellow
-        {0, 255, 0},     // green
-        {0, 120, 90},    // shadow green (teal-ish)
-        {0, 80, 200},    // blue
-        {150, 0, 200},   // violet
-    };
-    const uint16_t steps = 48;          // smoothing steps between colors
-    const uint16_t step_delay_ms = 20;  // ~1s fade between colors
-    const uint16_t hold_ms = 1000;      // stable display per color
-
-    while (1) {
-        for (size_t i = 0; i < sizeof(palette) / sizeof(palette[0]); ++i) {
-            const rgb_color_t *from = &palette[i];
-            const rgb_color_t *to = &palette[(i + 1) % (sizeof(palette) / sizeof(palette[0]))];
-            fade_between(from, to, steps, step_delay_ms);
-            vTaskDelay(pdMS_TO_TICKS(hold_ms));
+                err = set_led_color(&s_leds[i], 0, 0, 0);
+                if (err != ESP_OK) {
+                    ESP_LOGE(TAG, "Failed to turn off %s: %s", s_leds[i].name, esp_err_to_name(err));
+                }
+                vTaskDelay(off_ticks);
+            }
         }
     }
 }
 
 void led_control_init(void)
 {
-    // LED Strip 基本配置
-    led_strip_config_t strip_config = {
-        .strip_gpio_num = LED_RGB,  // 确保 common_gpio.h 里定义了这个
-        .max_leds = 1,                    // 板载1颗LED
-    };
-
-    // RMT 配置
     led_strip_rmt_config_t rmt_config = {
-        .resolution_hz = 10 * 1000 * 1000,  // 10MHz
+        .resolution_hz = 10 * 1000 * 1000, // 10 MHz
     };
 
-    // 创建 LED Strip (RMT 驱动)
-    ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip));
-    
-    // 清空 LED (关闭)
-    ESP_ERROR_CHECK(led_strip_clear(led_strip));
-    
-    ESP_LOGI(TAG, "LED Strip initialized on GPIO %d", LED_RGB);
+    for (size_t i = 0; i < LED_COUNT; ++i) {
+        led_strip_config_t strip_config = {
+            .strip_gpio_num = s_leds[i].gpio,
+            .max_leds = 1,
+        };
+
+        esp_err_t err = led_strip_new_rmt_device(&strip_config, &rmt_config, &s_leds[i].handle);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to init %s on GPIO %d: %s", s_leds[i].name, s_leds[i].gpio, esp_err_to_name(err));
+            s_leds[i].handle = NULL;
+            continue;
+        }
+
+        err = led_strip_clear(s_leds[i].handle);
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to clear %s: %s", s_leds[i].name, esp_err_to_name(err));
+        }
+
+        ESP_LOGI(TAG, "%s initialized on GPIO %d", s_leds[i].name, s_leds[i].gpio);
+    }
 }
-
-
-
-
-
-static TaskHandle_t s_rgb_task = NULL;
 
 void led_control_start_rgb_cycle(void)
 {
@@ -153,7 +109,8 @@ void led_control_start_rgb_cycle(void)
         ESP_LOGI(TAG, "RGB cycle already running");
         return;
     }
-    xTaskCreate(rgb_slow_blink, "rgb_cycle_task", 2048, NULL, 5, &s_rgb_task);
+
+    xTaskCreate(sequence_task, "ws2812_sequence", 2048, NULL, 5, &s_rgb_task);
 }
 
 void led_control_stop(void)
@@ -163,8 +120,24 @@ void led_control_stop(void)
         s_rgb_task = NULL;
     }
 
-    if (led_strip) {
-        ESP_ERROR_CHECK(led_strip_clear(led_strip));
-        ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+    for (size_t i = 0; i < LED_COUNT; ++i) {
+        if (!s_leds[i].handle) {
+            continue;
+        }
+
+        esp_err_t err = led_strip_clear(s_leds[i].handle);
+        if (err == ESP_OK) {
+            err = led_strip_refresh(s_leds[i].handle);
+        }
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to clear %s: %s", s_leds[i].name, esp_err_to_name(err));
+        }
+
+        err = led_strip_del(s_leds[i].handle);
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to delete %s: %s", s_leds[i].name, esp_err_to_name(err));
+        }
+
+        s_leds[i].handle = NULL;
     }
 }
