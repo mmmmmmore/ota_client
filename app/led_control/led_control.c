@@ -8,8 +8,10 @@
 #include <stddef.h>
 
 #define LED_COUNT            3
-#define LED_HOLD_TIME_MS     2000
-#define LED_OFF_TIME_MS       200
+#define LED_OFF_TIME_MS    200
+#define LED_RED_R          255
+#define LED_RED_G          255
+#define LED_RED_B            0
 
 typedef struct {
     const char *name;
@@ -21,12 +23,6 @@ static ws2812_led_t s_leds[LED_COUNT] = {
     {"LED1", GPIO_LED_WS2812,  NULL},
     {"LED2", GPIO_LED_WS2812_2, NULL},
     {"LED3", GPIO_LED_WS2812_3, NULL},
-};
-
-static const uint8_t s_led_colors[LED_COUNT][3] = {
-    {255,   0,   0}, // LED1 -> Red
-    {  0, 255,   0}, // LED2 -> Green
-    {  0,   0, 255}, // LED3 -> Blue
 };
 
 static const char *TAG = "LED_CONTROL";
@@ -45,10 +41,25 @@ static esp_err_t set_led_color(ws2812_led_t *led, uint8_t r, uint8_t g, uint8_t 
     return led_strip_refresh(led->handle);
 }
 
+static void set_all_leds_red(void)
+{
+    for (size_t i = 0; i < LED_COUNT; ++i) {
+        if (!s_leds[i].handle) {
+            continue;
+        }
+
+        esp_err_t err = set_led_color(&s_leds[i], LED_RED_R, LED_RED_G, LED_RED_B);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to set %s red: %s", s_leds[i].name, esp_err_to_name(err));
+        }
+    }
+}
+
 static void sequence_task(void *arg)
 {
-    const TickType_t hold_ticks = pdMS_TO_TICKS(LED_HOLD_TIME_MS);
     const TickType_t off_ticks = pdMS_TO_TICKS(LED_OFF_TIME_MS);
+
+    set_all_leds_red();
 
     while (1) {
         for (size_t i = 0; i < LED_COUNT; ++i) {
@@ -56,20 +67,17 @@ static void sequence_task(void *arg)
                 continue;
             }
 
-            esp_err_t err = set_led_color(&s_leds[i],
-                                          s_led_colors[i][0],
-                                          s_led_colors[i][1],
-                                          s_led_colors[i][2]);
+            esp_err_t err = set_led_color(&s_leds[i], 0, 0, 0);
             if (err != ESP_OK) {
-                ESP_LOGE(TAG, "Failed to light %s: %s", s_leds[i].name, esp_err_to_name(err));
-            } else {
-                vTaskDelay(hold_ticks);
+                ESP_LOGE(TAG, "Failed to turn off %s: %s", s_leds[i].name, esp_err_to_name(err));
+                continue;
+            }
 
-                err = set_led_color(&s_leds[i], 0, 0, 0);
-                if (err != ESP_OK) {
-                    ESP_LOGE(TAG, "Failed to turn off %s: %s", s_leds[i].name, esp_err_to_name(err));
-                }
-                vTaskDelay(off_ticks);
+            vTaskDelay(off_ticks);
+
+            err = set_led_color(&s_leds[i], LED_RED_R, LED_RED_G, LED_RED_B);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Failed to turn on %s: %s", s_leds[i].name, esp_err_to_name(err));
             }
         }
     }
