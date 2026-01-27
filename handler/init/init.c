@@ -105,8 +105,6 @@ esp_err_t platform_deinit(void) {
     return ESP_OK;
 }
 
-
-// --- IGN management (ISR + task) -------------------------------------------
 static QueueHandle_t s_gpio_evt_queue = NULL;
 
 static void IRAM_ATTR init_gpio_isr_handler(void *arg) {
